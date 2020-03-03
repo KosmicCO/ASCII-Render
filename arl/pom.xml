@@ -5,17 +5,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>us.kosdt.arl</groupId>
-  <artifactId>ascii-render-lib</artifactId>
+  <artifactId>arl</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>ascii-render-lib</name>
+  <name>arl</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.11</maven.compiler.source>
-    <maven.compiler.target>1.11</maven.compiler.target>
+    <maven.compiler.release>11</maven.compiler.release>
   </properties>
 
   <dependencies>
