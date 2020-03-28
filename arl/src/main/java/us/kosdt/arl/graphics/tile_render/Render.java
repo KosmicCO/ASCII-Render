@@ -1,6 +1,7 @@
 package us.kosdt.arl.graphics.tile_render;
 
 import us.kosdt.arl.graphics.Camera;
+import us.kosdt.arl.graphics.Color;
 import us.kosdt.arl.graphics.Window;
 import us.kosdt.arl.util.math.Vec2d;
 import us.kosdt.arl.util.math.Vec2i;
@@ -17,7 +18,8 @@ public abstract class Render {
     private static int[] renderModes;
     private static RenderTile[][] lastTileBuffer;
     private static RenderTile[][] tileBuffer;
-    //TODO: Record the list of unique graphical functions used
+
+    public static RenderTile DEFAULT_TILE = new RenderTile(0, Color.WHITE, Color.BLACK, RFUNC_NONE);
 
     private static boolean rendering = false;
 
@@ -37,11 +39,12 @@ public abstract class Render {
         renderDim = dim;
         tileBuffer = new RenderTile[renderDim.x][renderDim.y];
         rendering = true;
+        fill(DEFAULT_TILE);
     }
 
     public static void fill(RenderTile t) {
-        if(!rendering) {
-            return;
+        if(!rendering){
+            throw new RuntimeException("Attempting to draw to buffer while not in render mode");
         }
         for (int x = 0; x < tileBuffer.length; x++) {
             for(int y = 0; y < tileBuffer[x].length; y++) {
@@ -50,11 +53,69 @@ public abstract class Render {
         }
     }
 
-    public static void setTile(RenderTile t, int x, int y) {
+    private static void drawTileUnchecked(RenderTile t, int x, int y){
+        tileBuffer[x][y] = tileBuffer[x][y].blend(t);
+    }
+
+    private static void drawPermeableTileUnchecked(RenderTile t, int x, int y) {
+        RenderTile bot = tileBuffer[x][y];
+        tileBuffer[x][y] = new RenderTile(bot.id, bot.fore.alphaMix(t.back), bot.back.alphaMix(t.back), t.rFunc);
+    }
+
+    public static void drawTile(RenderTile t, int x, int y) {
+        if(!rendering){
+            throw new RuntimeException("Attempting to draw to buffer while not in render mode");
+        }
         if(0 > x || 0 > y || x >= renderDim.x || y >= renderDim.y) {
             throw new IllegalArgumentException("SetTile parameters are out of bounds");
         }
-        tileBuffer[x][y] = t;
+        drawTileUnchecked(t, x, y);
+    }
+
+    public static void drawPermeableTile(RenderTile t, int x, int y) {
+        if(!rendering){
+            throw new RuntimeException("Attempting to draw to buffer while not in render mode");
+        }
+        if(0 > x || 0 > y || x >= renderDim.x || y >= renderDim.y) {
+            throw new IllegalArgumentException("SetTile parameters are out of bounds");
+        }
+        drawPermeableTileUnchecked(t, x, y);
+    }
+
+    public static void drawRect(RenderTile t, int x1, int y1, int x2, int y2) {
+        Vec2i botLeft = new Vec2i(Math.max(0, Math.min(x1, x2)), Math.max(0, Math.min(y1, y2)));
+        Vec2i topRight = new Vec2i(Math.min(renderDim.x - 1, Math.max(x1, x2)), Math.min(renderDim.y - 1, Math.max(y1, y2)));
+
+        for (int x = botLeft.x; x <= topRight.x; x++) {
+            for(int y = botLeft.y; y <= topRight.y; y++){
+                drawTileUnchecked(t, x, y);
+            }
+        }
+    }
+
+    public static void drawForeground(RenderTile t, int x, int y) {
+        drawTile(t.setBack(Color.CLEAR), x, y);
+    }
+
+    public static void drawRect(RenderTile t, Vec2i pos, Vec2i dim){
+        Vec2i corner = pos.add(dim);
+        drawRect(t, pos.x, pos.y, corner.x, corner.y);
+    }
+
+    public static void drawPermeableRect(RenderTile t, int x1, int y1, int x2, int y2) {
+        Vec2i botLeft = new Vec2i(Math.max(0, Math.min(x1, x2)), Math.max(0, Math.min(y1, y2)));
+        Vec2i topRight = new Vec2i(Math.min(renderDim.x - 1, Math.max(x1, x2)), Math.min(renderDim.y - 1, Math.max(y1, y2)));
+
+        for (int x = botLeft.x; x <= topRight.x; x++) {
+            for(int y = botLeft.y; y <= topRight.y; y++){
+                drawPermeableTileUnchecked(t, x, y);
+            }
+        }
+    }
+
+    public static void drawPermeableRect(RenderTile t, Vec2i pos, Vec2i dim){
+        Vec2i corner = pos.add(dim);
+        drawPermeableRect(t, pos.x, pos.y, corner.x, corner.y);
     }
 
     private static boolean different() {

@@ -3,19 +3,17 @@ package us.kosdt.arl.graphics.tile_render;
 import org.lwjgl.BufferUtils;
 import us.kosdt.arl.graphics.FontSheet;
 import us.kosdt.arl.graphics.opengl.BufferObject;
-import us.kosdt.arl.graphics.opengl.GLState;
 import us.kosdt.arl.graphics.opengl.Shader;
 import us.kosdt.arl.graphics.opengl.VertexArrayObject;
+import us.kosdt.arl.graphics.tile_render.render_modes.ModeData;
+import us.kosdt.arl.graphics.tile_render.render_modes.WaterMode;
+import us.kosdt.arl.graphics.tile_render.render_modes.WindMode;
+import us.kosdt.arl.graphics.tile_render.render_modes.subfunctions.SimplexNoiseTile;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.ARBShaderSubroutine.*;
 import static us.kosdt.arl.graphics.opengl.GLObject.bindAll;
 import static us.kosdt.arl.graphics.tile_render.RenderTile.MAX_RFUNC_ID;
 
@@ -38,6 +36,13 @@ public abstract class FontShader {
         FONT_SHEET_SHADER.setUniformSubroutines(GL_VERTEX_SHADER, validRoutines);
         prevTime = System.nanoTime() * 1e-9;
         startTime = prevTime;
+
+        SimplexNoiseTile.setUniforms(FONT_SHEET_SHADER);
+
+        // Make sure each is at least initialized to something
+
+        setRenderModeUniforms(new WaterMode());
+        setRenderModeUniforms(new WindMode());
     }
 
     private static BufferObject FONT_SHEET_VBO;
@@ -63,18 +68,22 @@ public abstract class FontShader {
 
     private static int vertCount = -1;
 
-    public static void setFontSheet(FontSheet fontSheet) {
+    public static void setFont(FontSheet fontSheet) {
         setFontUniforms = true;
         font = fontSheet;
     }
 
-    public static FontSheet getFontSheet() {
+    public static void setRenderModeUniforms(ModeData data) {
+        data.setUniforms(FONT_SHEET_SHADER);
+    }
+
+    public static FontSheet getFont() {
         return font;
     }
 
     private static void fillVBO(RenderTile[][] vertData) {
         FONT_SHEET_VAO.bind();
-        if(vertData.length == 0 || vertData[0].length == 0) {
+        if (vertData.length == 0 || vertData[0].length == 0) {
             vertCount = 0;
         } else {
             vertCount = vertData.length * vertData[0].length;
@@ -85,8 +94,9 @@ public abstract class FontShader {
         FloatBuffer data = BufferUtils.createFloatBuffer(vertCount * 9);// 32 bytes per vertex [vec3][vec3][int][int]
 
         int count = 0;
-        for(RenderTile[] ta : vertData) {
-            for(RenderTile t : ta) {
+        for (int y = 0; y < vertData[0].length; y++) {
+            for (int x = 0; x < vertData.length; x++) {
+                RenderTile t = vertData[x][y];
                 data.put((float) t.back.r);
                 data.put((float) t.back.g);
                 data.put((float) t.back.b);
@@ -100,6 +110,7 @@ public abstract class FontShader {
                 count++;
             }
         }
+
         data.flip();
 
         glBindBuffer(GL_ARRAY_BUFFER, FONT_SHEET_VBO.id);

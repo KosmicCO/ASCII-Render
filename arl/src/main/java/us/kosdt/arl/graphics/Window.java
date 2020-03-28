@@ -1,20 +1,12 @@
 package us.kosdt.arl.graphics;
 
-import com.esotericsoftware.yamlbeans.YamlException;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.Configuration;
-import org.lwjgl.system.MemoryStack;
 import us.kosdt.arl.engine.Settings;
 
-import us.kosdt.arl.graphics.exceptions.InvalidFontSheetException;
-import us.kosdt.arl.graphics.opengl.GLState;
 import us.kosdt.arl.graphics.tile_render.FontShader;
-
-import java.io.FileNotFoundException;
-import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -217,7 +209,7 @@ public class Window {
     public void setFontSheet(FontSheet font) {
         this.font = font;
         resizeWindow(width * font.getTileWidth(), height * font.getTileHeight());
-        FontShader.setFontSheet(this.font);
+        FontShader.setFont(this.font);
     }
 
     private int calculateActualWidth() {

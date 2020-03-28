@@ -8,18 +8,23 @@ import us.kosdt.arl.graphics.tile_render.RenderTile;
 
 public class InitialRenderTest1 {
 
+    private static double offset = 0;
+
     public static void main(String[] args) {
         Core.init();
         Window.window().setResizable(true);
         Core.onStep(() -> {
             Render.startRender();
-            int c = 0;
-            for(int x = 0; x < Render.getRenderDim().x; x++) {
-                for(int y = 0; y < Render.getRenderDim().y; y++) {
-                    Render.setTile(new RenderTile(c % 512, Color.WHITE, Color.BLACK, c % 3), x, y);
+            offset += Core.dt() * 20;
+            int c = (int) offset;
+            for(int y = 0; y < Render.getRenderDim().y; y++) {
+                for(int x = 0; x < Render.getRenderDim().x; x++) {
+                    Render.drawTile(new RenderTile(c % 512, Color.WHITE, Color.BLACK, 1), x, y);
                     c++;
                 }
             }
+
+            Render.drawPermeableRect(new RenderTile(0, Color.WHITE, Color.gray(0.5).setA(.75)), 10, 20, 40, 40);
             Render.finishRender();
         });
         Core.run();

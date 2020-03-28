@@ -1,5 +1,6 @@
 package us.kosdt.arl.graphics.opengl;
 
+import org.joml.Matrix2d;
 import us.kosdt.arl.graphics.Camera;
 import us.kosdt.arl.graphics.Color;
 
@@ -128,6 +129,14 @@ public class Shader extends GLObject {
         glUniform4fv(uniform, new float[]{(float) value.r, (float) value.g, (float) value.b, (float) value.a});
     }
 
+    public void setUniform(String name, Matrix2d mat) {
+        bind();
+        int uniform = getUniformLocation(name);
+        glUniformMatrix2fv(uniform, false, new float[] {
+                (float) mat.m00, (float) mat.m01,
+                (float) mat.m10, (float) mat.m11});
+    }
+
     public void setUniform(String name, Matrix4d mat) {
         bind();
         int uniform = getUniformLocation(name);
@@ -138,16 +147,34 @@ public class Shader extends GLObject {
             (float) mat.m30(), (float) mat.m31(), (float) mat.m32(), (float) mat.m33()});
     }
 
-    public void setUniform(String name, int[] array, int max_length) {
+    public void setUniform(String name, int[] array, int maxLength) {
         bind();
         int uniform = getUniformLocation(name);
-        glUniform1iv(uniform, Arrays.copyOf(array, max_length));
+        glUniform1iv(uniform, Arrays.copyOf(array, maxLength));
     }
 
-    public void setUniform(String name, float[] array, int max_length) {
+    public void setUniform(String name, float[] array, int maxLength) {
         bind();
         int uniform = getUniformLocation(name);
-        glUniform1fv(uniform, Arrays.copyOf(array, max_length));
+        glUniform1fv(uniform, Arrays.copyOf(array, maxLength));
+    }
+
+    public void setUniformV2(String name, float[] array, int maxLength) {
+        bind();
+        int uniform = getUniformLocation(name);
+        glUniform2fv(uniform, Arrays.copyOf(array, maxLength * 2));
+    }
+
+    public void setUniformV3(String name, float[] array, int maxLength) {
+        bind();
+        int uniform = getUniformLocation(name);
+        glUniform3fv(uniform, Arrays.copyOf(array, maxLength * 3));
+    }
+
+    public void setUniformV4(String name, float[] array, int maxLength) {
+        bind();
+        int uniform = getUniformLocation(name);
+        glUniform4fv(uniform, Arrays.copyOf(array, maxLength * 4));
     }
 
     public void setUniformSubroutines(int shaderType, int[] indices){
