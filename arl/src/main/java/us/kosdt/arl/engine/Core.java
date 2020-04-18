@@ -32,7 +32,7 @@ public abstract class Core {
     public static void init() {
         MAIN_THREAD = Thread.currentThread();
         Window.initGLFW(10, 10);
-        // Input.init();
+        Input.init();
     }
 
     public static void onMainThread(Runnable toRun) {
@@ -57,7 +57,7 @@ public abstract class Core {
     //TODO: Get the Input class working.
     public static void run() {
         while (!shouldClose && !(Settings.CLOSE_ON_X && Window.window().shouldClose())) {
-            //Input.nextFrame();
+            Input.nextFrame();
             Window.window().nextFrame();
             Framebuffer.clearWindow(Settings.BACKGROUND_COLOR);
 

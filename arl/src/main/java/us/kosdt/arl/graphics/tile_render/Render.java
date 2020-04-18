@@ -102,6 +102,12 @@ public abstract class Render {
         drawRect(t, pos.x, pos.y, corner.x, corner.y);
     }
 
+    public static void drawRectExclusive(RenderTile t, Vec2i pos, Vec2i dim){
+        Vec2i corner = pos.add(dim.add(new Vec2i(dim.x == 0 ? 0 : (dim.x > 0 ? -1 : 1),
+                dim.y == 0 ? 0 : (dim.y > 0 ? -1 : 1))));
+        drawRect(t, pos.x, pos.y, corner.x, corner.y);
+    }
+
     public static void drawPermeableRect(RenderTile t, int x1, int y1, int x2, int y2) {
         Vec2i botLeft = new Vec2i(Math.max(0, Math.min(x1, x2)), Math.max(0, Math.min(y1, y2)));
         Vec2i topRight = new Vec2i(Math.min(renderDim.x - 1, Math.max(x1, x2)), Math.min(renderDim.y - 1, Math.max(y1, y2)));

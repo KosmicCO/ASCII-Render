@@ -7,11 +7,14 @@ import org.lwjgl.system.Configuration;
 import us.kosdt.arl.engine.Settings;
 
 import us.kosdt.arl.graphics.tile_render.FontShader;
+import us.kosdt.arl.util.math.Vec2d;
+import us.kosdt.arl.util.math.Vec2i;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
+import static us.kosdt.arl.util.math.MathUtils.*;
 
 public class Window {
 
@@ -56,15 +59,6 @@ public class Window {
         if (handle == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
         }
-
-        // main window initializers
-        /*
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer pWidth = stack.mallocInt(1);
-            IntBuffer pHeight = stack.mallocInt(1);
-            glfwGetWindowSize(handle, pWidth, pHeight);
-            glfwSetWindowPos(handle, 0, 0);
-        }*/
 
         setCursorEnabled(showCursor);
     }
@@ -212,6 +206,25 @@ public class Window {
         FontShader.setFont(this.font);
     }
 
+    public Vec2d toWindowScale(Vec2d v){
+        return v.mul(new Vec2d(width, height));
+    }
+
+    public Vec2d toClampedWindowScale(Vec2d v) {
+        Vec2d scaled = toWindowScale(v);
+        return new Vec2d(clamp(scaled.x, 0, width - EPSILON), clamp(scaled.y, 0, height - EPSILON));
+    }
+
+    public Vec2i toDiscreteWindowScale(Vec2d v){
+        Vec2d scaled = toWindowScale(v);
+        return new Vec2i(floor(scaled.x), floor(scaled.y));
+    }
+
+    public Vec2i toClampedDiscreteWindowScale(Vec2d v){
+        Vec2i scaled = toDiscreteWindowScale(v);
+        return new Vec2i(clamp(scaled.x, 0, width - 1), clamp(scaled.y, 0, height - 1));
+    }
+
     private int calculateActualWidth() {
         return width * font.getTileWidth();
     }
@@ -221,11 +234,17 @@ public class Window {
     }
 
     public int getActualWidth() {
-        return calculateActualWidth();
+        int[] h = new int[1];
+        int[] w = new int[1];
+        GLFW.glfwGetWindowSize(handle, w, h);
+        return w[0];
     }
 
     public int getActualHeight() {
-        return calculateActualHeight();
+        int[] h = new int[1];
+        int[] w = new int[1];
+        GLFW.glfwGetWindowSize(handle, w, h);
+        return h[0];
     }
 
     public int getTileWidth() {
@@ -234,5 +253,21 @@ public class Window {
 
     public int getTileHeight() {
         return height;
+    }
+
+    public void setCursorPosCallback(GLFWCursorPosCallbackI cursorPosCallback) {
+        glfwSetCursorPosCallback(handle, cursorPosCallback);
+    }
+
+    public void setKeyCallback(GLFWKeyCallbackI keyCallback) {
+        glfwSetKeyCallback(handle, keyCallback);
+    }
+
+    public void setMouseButtonCallback(GLFWMouseButtonCallbackI mouseButtonCallback) {
+        glfwSetMouseButtonCallback(handle, mouseButtonCallback);
+    }
+
+    public void setScrollCallback(GLFWScrollCallbackI scrollCallback) {
+        glfwSetScrollCallback(handle, scrollCallback);
     }
 }

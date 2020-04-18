@@ -1,7 +1,8 @@
 package us.kosdt.arl.graphics.tile_render.render_modes;
 
+import static us.kosdt.arl.util.math.MathUtils.EPSILON;
+
 public abstract class WaveMode implements ModeData{
-    public static final double FREQ_EPSILON = 1e-14;
 
     private double angle;
     private double frequency;
@@ -10,7 +11,7 @@ public abstract class WaveMode implements ModeData{
     private double scale;
 
     public WaveMode(double ang, double freq, double speed, double depth, double scale){
-        if(freq < FREQ_EPSILON){
+        if(freq < EPSILON){
             throw new IllegalArgumentException("The frequency cannot be set to 0");
         }
         angle = ang;

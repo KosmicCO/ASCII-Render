@@ -6,6 +6,8 @@ import java.util.function.Function;
 
 public abstract class MathUtils {
 
+    public static final double EPSILON = 1e-14;
+
     public static int ceil(double x) {
         return (int) Math.ceil(x);
     }

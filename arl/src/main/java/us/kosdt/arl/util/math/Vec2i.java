@@ -28,6 +28,24 @@ public class Vec2i {
         return new Vec2i(MathUtils.clamp(x, lower.x, upper.x), MathUtils.clamp(y, lower.y, upper.y));
     }
 
+    public boolean contains(Vec2i other){
+        Vec2i adjusted = new Vec2i(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
+        Vec2i positiveCompare = new Vec2i(Math.abs(x), Math.abs(y));
+        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x < adjusted.x || positiveCompare.y < adjusted.y){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean containsExclusive(Vec2i other){
+        Vec2i adjusted = new Vec2i(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
+        Vec2i positiveCompare = new Vec2i(Math.abs(x), Math.abs(y));
+        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x <= adjusted.x || positiveCompare.y <= adjusted.y){
+            return false;
+        }
+        return true;
+    }
+
     public Vec2i div(int a) {
         return new Vec2i(x / a, y / a);
     }

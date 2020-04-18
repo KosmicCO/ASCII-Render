@@ -27,6 +27,24 @@ public class Vec2d {
         return new Vec2d(MathUtils.clamp(x, lower.x, upper.x), MathUtils.clamp(y, lower.y, upper.y));
     }
 
+    public boolean contains(Vec2d other){
+        Vec2d adjusted = new Vec2d(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
+        Vec2d positiveCompare = new Vec2d(Math.abs(x), Math.abs(y));
+        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x < adjusted.x || positiveCompare.y < adjusted.y){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean containsExclusive(Vec2d other){
+        Vec2d adjusted = new Vec2d(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
+        Vec2d positiveCompare = new Vec2d(Math.abs(x), Math.abs(y));
+        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x <= adjusted.x || positiveCompare.y <= adjusted.y){
+            return false;
+        }
+        return true;
+    }
+
     public Vec2d div(double a) {
         return new Vec2d(x / a, y / a);
     }

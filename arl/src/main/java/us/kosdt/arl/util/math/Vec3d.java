@@ -28,6 +28,30 @@ public class Vec3d {
         return new Vec3d(MathUtils.clamp(x, lower.x, upper.x), MathUtils.clamp(y, lower.y, upper.y), MathUtils.clamp(z, lower.z, upper.z));
     }
 
+    public boolean contains(Vec3d other){
+        Vec3d adjusted = new Vec3d(x > 0 ? other.x : -other.x,
+                y > 0 ? other.y : -other.y,
+                z > 0 ? other.z : -other.z);
+        Vec3d positiveCompare = new Vec3d(Math.abs(x), Math.abs(y), Math.abs(z));
+        if(adjusted.x < 0 || adjusted.y < 0 || adjusted.z < 0
+                || positiveCompare.x < adjusted.x || positiveCompare.y < adjusted.y || positiveCompare.z < adjusted.z){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean containsExclusive(Vec3d other){
+        Vec3d adjusted = new Vec3d(x > 0 ? other.x : -other.x,
+                y > 0 ? other.y : -other.y,
+                z > 0 ? other.z : -other.z);
+        Vec3d positiveCompare = new Vec3d(Math.abs(x), Math.abs(y), Math.abs(z));
+        if(adjusted.x < 0 || adjusted.y < 0 || adjusted.z < 0
+                || positiveCompare.x <= adjusted.x || positiveCompare.y <= adjusted.y || positiveCompare.z <= adjusted.z){
+            return false;
+        }
+        return true;
+    }
+
     public Vec3d cross(Vec3d other) {
         return new Vec3d(y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
     }
