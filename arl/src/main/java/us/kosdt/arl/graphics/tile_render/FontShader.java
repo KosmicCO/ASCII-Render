@@ -47,23 +47,27 @@ public abstract class FontShader {
 
     private static BufferObject FONT_SHEET_VBO;
 
+    private static final int STRIDE = 52;
+    private static final int FLOATS_PER_VERTEX = 13;
+
     private static final VertexArrayObject FONT_SHEET_VAO = VertexArrayObject.createVAO(() -> {
 
             FONT_SHEET_VBO = new BufferObject(GL_ARRAY_BUFFER);
             FONT_SHEET_VBO.bind();
 
 
-            glVertexAttribPointer(0, 3, GL_FLOAT, false, 36, 0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, false, STRIDE, 0); // back col
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(1, 3, GL_FLOAT, false, 36, 12);
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, STRIDE, 12); // fore col
             glEnableVertexAttribArray(1);
-            glVertexAttribPointer(2, 1, GL_FLOAT, false, 36, 24);
+            glVertexAttribPointer(2, 1, GL_FLOAT, false, STRIDE, 24); // id
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(3, 1, GL_FLOAT, false, 36, 28);
+            glVertexAttribPointer(3, 1, GL_FLOAT, false, STRIDE, 28); // rFunc
             glEnableVertexAttribArray(3);
-            glVertexAttribPointer(4, 1, GL_FLOAT, false, 36, 32);
+            glVertexAttribPointer(4, 1, GL_FLOAT, false, STRIDE, 32); // count
             glEnableVertexAttribArray(4);
-
+            glVertexAttribPointer(5, 4, GL_FLOAT, false, STRIDE, 36); // over col
+            glEnableVertexAttribArray(5);
         });
 
     private static int vertCount = -1;
@@ -89,9 +93,9 @@ public abstract class FontShader {
             vertCount = vertData.length * vertData[0].length;
         }
         FONT_SHEET_VBO.bind();
-        glBufferData(GL_ARRAY_BUFFER, ((long) vertCount) * 36L, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, ((long) vertCount) * ((long) STRIDE), GL_DYNAMIC_DRAW);
 
-        FloatBuffer data = BufferUtils.createFloatBuffer(vertCount * 9);// 32 bytes per vertex [vec3][vec3][int][int]
+        FloatBuffer data = BufferUtils.createFloatBuffer(vertCount * FLOATS_PER_VERTEX); // 52 bytes per vertex [vec3][vec3][int][int][int][vec4]
 
         int count = 0;
         for (int y = 0; y < vertData[0].length; y++) {
@@ -107,6 +111,11 @@ public abstract class FontShader {
                 data.put((float) t.id);
                 data.put((float) t.rFunc);
                 data.put((float) count);
+
+                data.put((float) t.over.r);
+                data.put((float) t.over.g);
+                data.put((float) t.over.b);
+                data.put((float) t.over.a);
                 count++;
             }
         }

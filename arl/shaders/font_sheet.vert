@@ -6,6 +6,7 @@ layout (location = 1) in vec3 aForeColor;
 layout (location = 2) in float aTileID;
 layout (location = 3) in float aRenderID;
 layout (location = 4) in float count;
+layout (location = 5) in vec4 aOverColor;
 
 out VS_OUT {
     vec3 gBackColor;
@@ -240,8 +241,8 @@ void main() {
         }
     }
 
-    vs_out.gBackColor = cols[0];
-    vs_out.gForeColor = cols[1];
+    vs_out.gBackColor = mix(cols[0], aOverColor.xyz, aOverColor.w);
+    vs_out.gForeColor = mix(cols[1], aOverColor.xyz, aOverColor.w);
     vs_out.gTileID = int(aTileID + 0.01);
 }
 

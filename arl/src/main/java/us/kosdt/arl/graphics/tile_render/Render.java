@@ -8,6 +8,8 @@ import us.kosdt.arl.util.math.Vec2i;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static us.kosdt.arl.graphics.tile_render.RenderTile.MAX_RFUNC_ID;
 import static us.kosdt.arl.graphics.tile_render.RenderTile.RFUNC_NONE;
@@ -53,6 +55,19 @@ public abstract class Render {
         }
     }
 
+    public static void fill(RenderTile t, BiPredicate<Integer, Integer> replace){
+        if(!rendering){
+            throw new RuntimeException("Attempting to draw to buffer while not in render mode");
+        }
+        for (int x = 0; x < tileBuffer.length; x++) {
+            for(int y = 0; y < tileBuffer[x].length; y++) {
+                if(replace.test(x, y)) {
+                    tileBuffer[x][y] = t;
+                }
+            }
+        }
+    }
+
     private static void drawTileUnchecked(RenderTile t, int x, int y){
         tileBuffer[x][y] = tileBuffer[x][y].blend(t);
     }
@@ -60,6 +75,14 @@ public abstract class Render {
     private static void drawPermeableTileUnchecked(RenderTile t, int x, int y) {
         RenderTile bot = tileBuffer[x][y];
         tileBuffer[x][y] = new RenderTile(bot.id, bot.fore.alphaMix(t.back), bot.back.alphaMix(t.back), t.rFunc);
+    }
+
+    private static void drawOverColorUnchecked(Color c, int x, int y){
+        tileBuffer[x][y] = tileBuffer[x][y].setOver(c);
+    }
+
+    private static void blendOverColorUnchecked(Color c, int x, int y) {
+        tileBuffer[x][y] = tileBuffer[x][y].blendOver(c);
     }
 
     public static void drawTile(RenderTile t, int x, int y) {
@@ -72,14 +95,24 @@ public abstract class Render {
         drawTileUnchecked(t, x, y);
     }
 
-    public static void drawPermeableTile(RenderTile t, int x, int y) {
+    public static void drawOverColor(Color c, int x, int y) {
         if(!rendering){
             throw new RuntimeException("Attempting to draw to buffer while not in render mode");
         }
         if(0 > x || 0 > y || x >= renderDim.x || y >= renderDim.y) {
             throw new IllegalArgumentException("SetTile parameters are out of bounds");
         }
-        drawPermeableTileUnchecked(t, x, y);
+        drawOverColorUnchecked(c, x, y);
+    }
+
+    public static void blendOverColor(Color c, int x, int y) {
+        if(!rendering){
+            throw new RuntimeException("Attempting to draw to buffer while not in render mode");
+        }
+        if(0 > x || 0 > y || x >= renderDim.x || y >= renderDim.y) {
+            throw new IllegalArgumentException("SetTile parameters are out of bounds");
+        }
+        blendOverColorUnchecked(c, x, y);
     }
 
     public static void drawRect(RenderTile t, int x1, int y1, int x2, int y2) {
