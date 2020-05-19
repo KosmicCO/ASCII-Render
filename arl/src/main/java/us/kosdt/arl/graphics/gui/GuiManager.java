@@ -27,7 +27,7 @@ public class GuiManager {
     private GuiManager() {
         typesToPass = new TreeSet();
         component = null;
-        Input.addListener((type, mouse, deltaMouse, key, pressed, changed) -> {
+        Input.addListener((type, mouse, deltaMouse, key, pressed, changed, mods) -> {
             if(component != null){
                 switch(type){
                     case MOUSE:
@@ -35,7 +35,10 @@ public class GuiManager {
                                 Window.window().toWindowScale(deltaMouse)));
                         break;
                     case KEY:
-                        component.handleMessage(new KeyPress(key, pressed, changed));
+                        component.handleMessage(new KeyPress(key, pressed, changed, mods));
+                        break;
+                    case CHAR:
+                        component.handleMessage(new CharSubmit(key, mods));
                         break;
                     case MOUSE_BUTTON:
                         component.handleMessage(new MouseButton(key, pressed, changed,

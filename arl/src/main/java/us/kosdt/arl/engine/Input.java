@@ -29,29 +29,33 @@ public class Input {
     static void init() {
         Window.window().setCursorPosCallback((window, xpos, ypos) -> {
             Vec2d nMouse = new Vec2d(((double) xpos) / Window.window().getActualWidth(), 1 - ((double) ypos) / Window.window().getActualHeight());
-            RI_LISTENER.forEach(ril -> ril.receiveInput(MOUSE, nMouse, nMouse.sub(mouse), 0, false, false));
+            RI_LISTENER.forEach(ril -> ril.receiveInput(MOUSE, nMouse, nMouse.sub(mouse), 0, false, false, 0));
             mouse = nMouse;
         });
 
         Window.window().setKeyCallback((window, key, scancode, action, mods) -> {
             if(key >= 0){
                 boolean nks =  action != GLFW_RELEASE;
-                RI_LISTENER.forEach(ril -> ril.receiveInput(KEY, null, null, key, nks, nks != keys.get(key)));
+                RI_LISTENER.forEach(ril -> ril.receiveInput(KEY, null, null, key, nks, nks != keys.get(key), mods));
                 keys.set(key, nks);
             }
+        });
+
+        Window.window().setCharModsCallback((window, codepoint, mods) -> {
+            RI_LISTENER.forEach(ril -> ril.receiveInput(CHAR, null, null, codepoint, false, false, mods));
         });
 
         Window.window().setMouseButtonCallback((window, button, action, mods) -> {
             if(button >= 0) {
                 boolean nbs = action != GLFW_RELEASE;
-                RI_LISTENER.forEach(ril -> ril.receiveInput(MOUSE_BUTTON, mouse, null, button, nbs, nbs != buttons.get(button)));
+                RI_LISTENER.forEach(ril -> ril.receiveInput(MOUSE_BUTTON, mouse, null, button, nbs, nbs != buttons.get(button), mods));
                 buttons.set(button, nbs);
             }
         });
 
         Window.window().setScrollCallback((Window, xoffset, yoffset) -> {
             Vec2d nwo = new Vec2d(xoffset, yoffset);
-            RI_LISTENER.forEach(ril -> ril.receiveInput(MOUSE_WHEEL, nwo, nwo.sub(mouseWheel), 0, false, false));
+            RI_LISTENER.forEach(ril -> ril.receiveInput(MOUSE_WHEEL, nwo, nwo.sub(mouseWheel), 0, false, false, 0));
             mouseWheel = nwo;
         });
     }
@@ -104,12 +108,13 @@ public class Input {
     }
 
     public interface ReactiveInputListener{
-        public void receiveInput(Type type, Vec2d mouse, Vec2d deltaMouse, int key, boolean pressed, boolean changed);
+        public void receiveInput(Type type, Vec2d mouse, Vec2d deltaMouse, int key, boolean pressed, boolean changed, int mods);
     }
 
     public enum Type{
         MOUSE,
         KEY,
+        CHAR,
         MOUSE_BUTTON,
         MOUSE_WHEEL;
     }

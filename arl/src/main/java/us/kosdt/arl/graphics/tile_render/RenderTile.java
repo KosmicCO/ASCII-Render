@@ -32,7 +32,7 @@ public class RenderTile {
         if(id < 0){
             throw new IllegalArgumentException("Id cannot be less than 0");
         }
-        if(id > FontShader.getFont().getMaxTileID()){
+        if(id > FontShader.getFont().maxTileID){
             throw new IllegalArgumentException("Id cannot be greater than max tile id of the window");
         }
 

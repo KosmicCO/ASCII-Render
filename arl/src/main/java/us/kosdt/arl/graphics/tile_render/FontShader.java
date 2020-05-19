@@ -153,8 +153,8 @@ public abstract class FontShader {
             //TODO: Add random and delta values as uniforms.
 
             if(setFontUniforms) {
-                FONT_SHEET_SHADER.setUniform("sheetCols", font.getTileColumns());
-                FONT_SHEET_SHADER.setUniform("sheetRows", font.getTileRows());
+                FONT_SHEET_SHADER.setUniform("sheetCols", font.tileColumns);
+                FONT_SHEET_SHADER.setUniform("sheetRows", font.tileRows);
                 setFontUniforms = false;
             }
             double curTime = System.nanoTime() * 1e-9;
@@ -165,7 +165,7 @@ public abstract class FontShader {
             FONT_SHEET_SHADER.setUniform("frameTime", (float) frameTime);
             FONT_SHEET_SHADER.setUniform("totalTime", (float) totalTime);
 
-            bindAll(font.getFontSheet(), FONT_SHEET_SHADER, FONT_SHEET_VAO);
+            bindAll(font.fontSheet, FONT_SHEET_SHADER, FONT_SHEET_VAO);
             glDrawArrays(GL_POINTS, 0, vertCount);
         }
     }

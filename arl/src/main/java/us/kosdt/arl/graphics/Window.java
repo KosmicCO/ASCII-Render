@@ -169,9 +169,9 @@ public class Window {
 
 
 
-        if(font.getTileWidth() > aWidth || font.getTileHeight() > aHeight) {
-            nWidth = Math.max(width * font.getTileWidth(), font.getTileWidth());
-            nHeight = Math.max(height * font.getTileHeight(), font.getTileHeight());
+        if(font.tileWidth > aWidth || font.tileHeight > aHeight) {
+            nWidth = Math.max(width * font.tileWidth, font.tileWidth);
+            nHeight = Math.max(height * font.tileHeight, font.tileHeight);
             resizeAgain = true;
         }
 
@@ -182,14 +182,18 @@ public class Window {
             resizeAgain = true;
         }*/
 
-        width = nWidth / font.getTileWidth();
-        height = nHeight / font.getTileHeight();
+        width = nWidth / font.tileWidth;
+        height = nHeight / font.tileHeight;
 
 
         if(resizeAgain) {
             glfwSetWindowSize(handle, nWidth, nHeight);
         }
 
+    }
+
+    public long getHandle() {
+        return handle;
     }
 
     public void resizeWindow(int width, int height) {
@@ -202,7 +206,7 @@ public class Window {
 
     public void setFontSheet(FontSheet font) {
         this.font = font;
-        resizeWindow(width * font.getTileWidth(), height * font.getTileHeight());
+        resizeWindow(width * font.tileWidth, height * font.tileHeight);
         FontShader.setFont(this.font);
     }
 
@@ -226,11 +230,11 @@ public class Window {
     }
 
     private int calculateActualWidth() {
-        return width * font.getTileWidth();
+        return width * font.tileWidth;
     }
 
     private int calculateActualHeight() {
-        return height * font.getTileHeight();
+        return height * font.tileHeight;
     }
 
     public int getActualWidth() {
@@ -261,6 +265,10 @@ public class Window {
 
     public void setKeyCallback(GLFWKeyCallbackI keyCallback) {
         glfwSetKeyCallback(handle, keyCallback);
+    }
+
+    public void setCharModsCallback(GLFWCharModsCallbackI charModsCallback) {
+        glfwSetCharModsCallback(handle, charModsCallback);
     }
 
     public void setMouseButtonCallback(GLFWMouseButtonCallbackI mouseButtonCallback) {

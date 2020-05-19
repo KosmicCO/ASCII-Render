@@ -12,67 +12,19 @@ public class FontSheet {
 
     private static int nextID = 0;
 
-    private int id;
-    private Texture fontSheet;
-    private int tileWidth;
-    private int tileHeight;
-    private String sheetName;
-    private String author;
-    private String version;
-    private int sheetWidth;
-    private int sheetHeight;
-    private int maxTileID;
+    public final int id;
+    public final Texture fontSheet;
+    public final int tileWidth;
+    public final int tileHeight;
+    public final String sheetName;
+    public final String author;
+    public final String version;
+    public final int sheetWidth;
+    public final int sheetHeight;
+    public final int maxTileID;
 
-    public int getId() {
-        return id;
-    }
-
-    public Texture getFontSheet() {
-        return fontSheet;
-    }
-
-    public int getTileWidth() {
-        return tileWidth;
-    }
-
-    public int getTileHeight() {
-        return tileHeight;
-    }
-
-    public String getName() {
-        return sheetName;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public int getSheetWidth() {
-        return sheetWidth;
-    }
-
-    public int getSheetHeight() {
-        return sheetHeight;
-    }
-
-    public int getMaxTileID() {
-        return maxTileID;
-    }
-
-    public int getTileColumns() {
-        return tileColumns;
-    }
-
-    public int getTileRows() {
-        return tileRows;
-    }
-
-    private int tileColumns;
-    private int tileRows;
+    public final int tileColumns;
+    public final int tileRows;
 
     public FontSheet(String sheetDir, String infoDir) throws FileNotFoundException, YamlException, InvalidFontSheetException {
         YamlReader reader = new YamlReader(new FileReader(infoDir));

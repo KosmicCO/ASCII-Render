@@ -8,26 +8,16 @@ package us.kosdt.arl.event.messages.gui;
 import us.kosdt.arl.event.Message;
 
 /**
- * Transmits the new state of a certain key.
+ * Transmits a submitted character.
  *
  * @author TARS
  */
-public class KeyPress implements Message {
+public class CharSubmit implements Message {
 
     /**
-     * The key to which this message applies.
+     * Character submitted to type.
      */
     public final int key;
-
-    /**
-     * The state of the button.
-     */
-    public final boolean state;
-
-    /**
-     * Whether the state of the key just changed.
-     */
-    public final boolean changed;
 
     /**
      * Mode keys held down during key press.
@@ -37,15 +27,12 @@ public class KeyPress implements Message {
     /**
      * Default constructor.
      *
-     * @param k The key.
-     * @param s The state.
-     * @param c Whether the state just changed.
+     * @param c Character submitted to type.
      * @param m Mod keys held down during key press.
      */
-    public KeyPress(int k, boolean s, boolean c, int m) {
-        key = k;
-        state = s;
-        changed = c;
+    public CharSubmit(int c, int m) {
+        key = c;
         mods = m;
     }
 }
+
