@@ -5,3 +5,5 @@ version: "1.0"
 max_tile_id: 511
 tile_width: 10
 tile_height: 18
+
+map: "Courier.map.yml"

@@ -85,7 +85,7 @@ public abstract class Button implements Component {
                     }
                     break;
             }
-            return contains(mb.mousePos);
+            return contains(mb.position);
         });
 
         caught |= Message.onMessageType(m, MousePosition.class, mp -> {

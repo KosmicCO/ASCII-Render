@@ -5,6 +5,7 @@
  */
 package us.kosdt.arl.event.messages.gui;
 
+import org.w3c.dom.ls.LSOutput;
 import us.kosdt.arl.event.Message;
 
 /**
@@ -47,5 +48,14 @@ public class KeyPress implements Message {
         state = s;
         changed = c;
         mods = m;
+    }
+
+    public String toString() {
+        return (new StringBuilder("{"))
+                .append("key: ").append(key)
+                .append(", state: ").append(state)
+                .append(", changed: ").append(changed)
+                .append(", mods: ").append(mods)
+                .append("}").toString();
     }
 }

@@ -2,6 +2,8 @@ package us.kosdt.arl.graphics;
 
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
+import us.kosdt.arl.encoding.UnicodeMap;
+import us.kosdt.arl.encoding.exceptions.InvalidUnicodeMap;
 import us.kosdt.arl.graphics.exceptions.InvalidFontSheetException;
 import us.kosdt.arl.graphics.opengl.Texture;
 
@@ -26,7 +28,9 @@ public class FontSheet {
     public final int tileColumns;
     public final int tileRows;
 
-    public FontSheet(String sheetDir, String infoDir) throws FileNotFoundException, YamlException, InvalidFontSheetException {
+    public final UnicodeMap unicodeMap;
+
+    public FontSheet(String sheetDir, String infoDir, String mapDir) throws FileNotFoundException, YamlException, InvalidFontSheetException, InvalidUnicodeMap {
         YamlReader reader = new YamlReader(new FileReader(infoDir));
         FontSheetInfoYAML info = reader.read(FontSheetInfoYAML.class);
 
@@ -52,12 +56,18 @@ public class FontSheet {
         version = info.version;
         maxTileID = info.max_tile_id;
 
+        if(info.map != null){
+            unicodeMap = new UnicodeMap(info.map);
+        }else {
+            unicodeMap = new UnicodeMap(mapDir);
+        }
+
         id = nextID;
         nextID++;
     }
 
-    public FontSheet(String dirName) throws FileNotFoundException, YamlException, InvalidFontSheetException {
-        this(dirName + ".png", dirName + ".yml");
+    public FontSheet(String dirName) throws FileNotFoundException, YamlException, InvalidFontSheetException, InvalidUnicodeMap {
+        this(dirName + ".png", dirName + ".yml", dirName + ".map.yml");
     }
 
     public String toString() {
@@ -83,5 +93,7 @@ public class FontSheet {
         public String author;
         public String version;
         public int max_tile_id;
+
+        public String map;
     }
 }

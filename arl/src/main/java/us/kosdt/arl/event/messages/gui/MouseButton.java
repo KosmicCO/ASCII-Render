@@ -34,7 +34,7 @@ public class MouseButton implements Message {
     /**
      * The mouse position at the time of the click;
      */
-    public final Vec2d mousePos;
+    public final Vec2d position;
 
     /**
      * Default constructor.
@@ -48,6 +48,15 @@ public class MouseButton implements Message {
         button = b;
         state = s;
         changed = c;
-        mousePos = mouse;
+        position = mouse;
+    }
+
+    public String toString() {
+        return (new StringBuilder("{"))
+                .append("button: ").append(button)
+                .append(", state: ").append(state)
+                .append(", changed: ").append(changed)
+                .append(", position: ").append(position)
+                .append("}").toString();
     }
 }

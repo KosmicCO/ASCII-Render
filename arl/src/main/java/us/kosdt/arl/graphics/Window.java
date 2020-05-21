@@ -88,7 +88,7 @@ public class Window {
 
         glfwShowWindow(window.handle);
         try {
-            window.setFontSheet(new FontSheet("resources/fontsheets/Courier-12"));
+            window.setFontSheet(new FontSheet("resources/fontsheets/Hack-12"));
         } catch(Exception e) {
             throw new RuntimeException(e);
         }

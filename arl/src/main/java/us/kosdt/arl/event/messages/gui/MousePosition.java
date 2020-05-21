@@ -36,4 +36,11 @@ public class MousePosition implements Message {
         position = pos;
         delta = d;
     }
+
+    public String toString() {
+        return (new StringBuilder("{"))
+                .append("delta: ").append(delta)
+                .append(", position: ").append(position)
+                .append("}").toString();
+    }
 }

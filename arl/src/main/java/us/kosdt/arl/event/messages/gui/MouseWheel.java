@@ -36,4 +36,11 @@ public class MouseWheel implements Message {
         wheelOffset = wheel;
         wheelDelta = delta;
     }
+
+    public String toString() {
+        return (new StringBuilder("{"))
+                .append("wheelOffset: ").append(wheelOffset)
+                .append(", wheelDelta: ").append(wheelDelta)
+                .append("}").toString();
+    }
 }

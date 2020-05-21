@@ -34,5 +34,12 @@ public class CharSubmit implements Message {
         key = c;
         mods = m;
     }
+
+    public String toString() {
+        return (new StringBuilder("{"))
+                .append("key: ").append(key)
+                .append(", mods: ").append(mods)
+                .append("}").toString();
+    }
 }
 

@@ -1,0 +1,54 @@
+#Standard Character Ordering
+
+entries:
+  - !ent
+    ch:   0x00020 # ASCII
+    end:  0x0007F
+  - !ent
+    ch:   0x000A1 # Latin-based European
+    end:  0x00100
+  - !ent
+    ch:   0x00370 # Greek and Copic
+    pos:  0x0110
+    end:  0x01A0
+  - !ent
+    ch:   0x00400 # Cyrillic
+    pos:  0x01A0
+    end:  0x0200
+  - !ent
+    ch:   0x0048A # Cyrillic Supplement
+    pos:  0x020A
+    end:  0x0334
+  - !ent
+    ch:   0x00530 # Armenian
+    pos:  0x02A0
+    end:  0x02ED
+  - !ent
+    ch:   0x005D0 # Hebrew
+    pos:  0x0300
+    end:  0x031A
+  - !ent
+    ch:   0x005F0 # Hebrew Ligatures
+    pos:  0x0320
+    end:  0x0325
+  - !ent
+    ch:   0x03000 # CJK Punctuation
+    doub: true
+    pos:  0x0340
+    end:  0x0346
+  - !ent
+    ch:   0x03008 # CJK Punctuation Supplement
+    doub: true
+    pos:  0x0350
+    end:  0x035C
+  - !ent
+    ch:   0x03040 # Hiragana and Katakana
+    doub: true
+    pos:  0x0360
+    end:  0x04E0
+  - !ent
+    ch:   0x031F0 # Katakana Phonetic Extension
+    doub: true
+    pos:  0x04E0
+    end:  0x0500
+
