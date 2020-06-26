@@ -9,6 +9,7 @@ import us.kosdt.arl.graphics.opengl.Texture;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.List;
 
 public class FontSheet {
 
@@ -18,6 +19,7 @@ public class FontSheet {
     public final Texture fontSheet;
     public final int tileWidth;
     public final int tileHeight;
+    public final double ratio;
     public final String sheetName;
     public final String author;
     public final String version;
@@ -37,7 +39,7 @@ public class FontSheet {
         fontSheet = Texture.load(sheetDir);
 
         if(fontSheet.getWidth() % info.tile_width != 0 || fontSheet.getHeight() % info.tile_height != 0) {
-            throw new InvalidFontSheetException("The tile width or height do not divide the font sheet width or heigh evenly");
+            throw new InvalidFontSheetException("The tile width or height do not divide the font sheet width or height evenly");
         }
 
         sheetWidth = fontSheet.getWidth();
@@ -51,13 +53,14 @@ public class FontSheet {
 
         tileWidth = info.tile_width;
         tileHeight = info.tile_height;
+        ratio = ((double) tileWidth) / ((double) tileHeight);
         sheetName = info.name;
         author = info.author;
         version = info.version;
         maxTileID = info.max_tile_id;
 
         if(info.map != null){
-            unicodeMap = new UnicodeMap(info.map);
+            unicodeMap = new UnicodeMap(info.map.toArray(new String[info.map.size()]));
         }else {
             unicodeMap = new UnicodeMap(mapDir);
         }
@@ -70,6 +73,18 @@ public class FontSheet {
         this(dirName + ".png", dirName + ".yml", dirName + ".map.yml");
     }
 
+    public int defaultSize(){
+        return tileHeight;
+    }
+
+    public double getHeight(double size){
+        return size;
+    }
+
+    public double getWidth(double size){
+        return ratio * size;
+    }
+
     public String toString() {
         return (new StringBuilder())
                 .append("name: ").append(sheetName == null ? "unknown" : sheetName)
@@ -78,6 +93,7 @@ public class FontSheet {
                 .append("\nversion: ").append(version == null ? "unknown" : version)
                 .append("\ntile width: ").append(tileWidth)
                 .append("\ntile height: ").append(tileHeight)
+                .append("\nratio: ").append(ratio)
                 .append("\nsheet width: ").append(sheetWidth)
                 .append("\nsheet height: ").append(sheetHeight)
                 .append("\ncolumns: ").append(tileColumns)
@@ -94,6 +110,6 @@ public class FontSheet {
         public String version;
         public int max_tile_id;
 
-        public String map;
+        public List<String> map;
     }
 }

@@ -23,6 +23,7 @@ public class Window {
     private final long handle;
     private int width;
     private int height;
+    private double fontSize;
     private boolean resizable;
     private FontSheet font;
 
@@ -49,11 +50,11 @@ public class Window {
         this.width = width;
         this.height = height;
         this.font = font;
+        fontSize = 24;
 
         if(this.font == null){
             handle = glfwCreateWindow(100, 100, title, NULL, NULL);
         } else {
-
             handle = glfwCreateWindow(calculateActualWidth(), calculateActualHeight(), title, NULL, NULL);
         }
         if (handle == NULL) {
@@ -88,7 +89,7 @@ public class Window {
 
         glfwShowWindow(window.handle);
         try {
-            window.setFontSheet(new FontSheet("resources/fontsheets/Hack-12"));
+            window.setFontSheet(new FontSheet("resources/fontsheets/FairfaxHaxHD"));
         } catch(Exception e) {
             throw new RuntimeException(e);
         }
@@ -157,6 +158,7 @@ public class Window {
 
     private void resize(int aWidth, int aHeight) {
 
+
         if(font == null){
             return;
         }
@@ -167,11 +169,12 @@ public class Window {
         boolean resizeAgain = false;
         glViewport(0, 0, nWidth, nHeight);
 
+        double tWidth = font.getWidth(fontSize);
+        double tHeight = font.getHeight(fontSize);
 
-
-        if(font.tileWidth > aWidth || font.tileHeight > aHeight) {
-            nWidth = Math.max(width * font.tileWidth, font.tileWidth);
-            nHeight = Math.max(height * font.tileHeight, font.tileHeight);
+        if(tWidth > aWidth || tHeight > aHeight) {
+            nWidth = (int) Math.max(width * tWidth, tWidth);
+            nHeight = (int) Math.max(height * tHeight, tHeight);
             resizeAgain = true;
         }
 
@@ -182,8 +185,8 @@ public class Window {
             resizeAgain = true;
         }*/
 
-        width = nWidth / font.tileWidth;
-        height = nHeight / font.tileHeight;
+        width = (int) (nWidth / tWidth);
+        height = (int) (nHeight / tHeight);
 
 
         if(resizeAgain) {
@@ -206,7 +209,7 @@ public class Window {
 
     public void setFontSheet(FontSheet font) {
         this.font = font;
-        resizeWindow(width * font.tileWidth, height * font.tileHeight);
+        resizeWindow((int) (width * font.getWidth(fontSize)), (int) (height * font.getHeight(fontSize)));
         FontShader.setFont(this.font);
     }
 
@@ -230,11 +233,11 @@ public class Window {
     }
 
     private int calculateActualWidth() {
-        return width * font.tileWidth;
+        return (int) (width * font.getWidth(fontSize));
     }
 
     private int calculateActualHeight() {
-        return height * font.tileHeight;
+        return (int) (height * font.getHeight(fontSize));
     }
 
     public int getActualWidth() {

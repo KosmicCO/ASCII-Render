@@ -1,0 +1,9 @@
+#Standard Character Ordering: CJK Extention A Characters
+
+entries:
+  - !ent
+    ch:   0x03400
+    doub: true
+    pos:  0xA900
+    end:  0xDC80
+

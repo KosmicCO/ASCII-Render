@@ -1,0 +1,12 @@
+name: "FairfaxHaxHD"
+author: "KosmicCO@github.com"
+version: "1.0"
+
+max_tile_id: 56575
+tile_width: 16
+tile_height: 48
+
+map:
+  - "resources/fontsheets/SCO-v1.map.yml"
+  - "resources/fontsheets/SCO-CJK-v1.map.yml"
+  - "resources/fontsheets/SCO-CJK-Extension-A-v1.map.yml"

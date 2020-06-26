@@ -1,0 +1,12 @@
+name: "GNU-Unifont-CJK-A-Supplement-v1-14"
+author: "KosmicCO@github.com"
+version: "1.0"
+
+max_tile_id: 56575
+tile_width: 7
+tile_height: 21
+
+map:
+  - "resources/fontsheets/SCO-v1.map.yml"
+  - "resources/fontsheets/SCO-CJK-v1.map.yml"
+  - "resources/fontsheets/SCO-CJK-Extension-A-v1.map.yml"

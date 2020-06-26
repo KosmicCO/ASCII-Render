@@ -1,9 +1,0 @@
-name: "Source-Code-Pro-10"
-author: "KosmicCO@github.com"
-version: "1.0"
-
-max_tile_id: 1279
-tile_width: 8
-tile_height: 17
-
-map: "resources/fontsheets/SCO-v1.map.yml"

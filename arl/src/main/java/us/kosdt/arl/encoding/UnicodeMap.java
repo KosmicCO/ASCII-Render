@@ -7,18 +7,25 @@ import us.kosdt.arl.graphics.FontSheet;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class UnicodeMap {
 
     private final UnicodeMapEntry[] sortedMap;
 
-    public UnicodeMap(String file) throws FileNotFoundException, YamlException, InvalidUnicodeMap {
-        YamlReader reader = new YamlReader(new FileReader(file));
-        reader.getConfig().setClassTag("ent", UnicodeMapEntry.class);
-        List<UnicodeMapEntry> loadedMap = reader.read(MapLoadYAML.class).entries;
+    public UnicodeMap(String... files) throws FileNotFoundException, YamlException, InvalidUnicodeMap {
+        List<List<UnicodeMapEntry>> entriesList = new ArrayList();
+
+        for (String file : files){
+            if(file != null){
+                entriesList.add(loadMap(file));
+            }
+        }
+
+        List<UnicodeMapEntry> loadedMap = new ArrayList();
+        for (List<UnicodeMapEntry> mel : entriesList){
+            loadedMap.addAll(mel);
+        }
 
         for (UnicodeMapEntry mapEntryYAML : loadedMap) {
             mapEntryYAML.fillInfo();
@@ -28,6 +35,12 @@ public class UnicodeMap {
         Arrays.sort(sortedMap);
     }
 
+    private List<UnicodeMapEntry> loadMap(String file) throws YamlException, FileNotFoundException {
+        YamlReader reader = new YamlReader(new FileReader(file));
+        reader.getConfig().setClassTag("ent", UnicodeMapEntry.class);
+        return reader.read(MapLoadYAML.class).entries;
+    }
+
     private TileChar interpolateTileChar(UnicodeMapEntry ume, int codepoint){
         if(codepoint >= ume.len + ume.ch){
             return null;
@@ -35,7 +48,7 @@ public class UnicodeMap {
         return new TileChar((codepoint - ume.ch) * (ume.doub ? 2 : 1) + ume.pos, ume.doub);
     }
     
-    public TileChar getMappedTileChar(int codepoint){
+    public TileChar mapCodePoint(int codepoint){
         int index = Arrays.binarySearch(sortedMap, new UnicodeMapEntry(codepoint));
         
         if(index >= 0){ // exact key found
@@ -47,6 +60,12 @@ public class UnicodeMap {
             }
             return interpolateTileChar(sortedMap[index - 1], codepoint);
         }
+    }
+
+    public TileCharList mapCodePointString(Iterator<Integer> it){
+        List<TileChar> tcl = new ArrayList();
+        it.forEachRemaining(cp -> tcl.add(mapCodePoint(cp))); //TODO: Have support for characters which change form depending on characters around them.
+        return new TileCharList(tcl);
     }
 
     //TODO: Make string parser for characters with supplement unicode characters.
@@ -146,6 +165,17 @@ public class UnicodeMap {
             }
 
             return Boolean.compare(doub, me.doub);
+        }
+
+        @Override
+        public String toString(){
+            return (new StringBuilder("{"))
+                    .append("ch: ").append(ch)
+                    .append(", pos: ").append(pos)
+                    .append(", len: ").append(len)
+                    .append(", end: ").append(end)
+                    .append(", doub: ").append(doub)
+                    .append("}").toString();
         }
     }
 }

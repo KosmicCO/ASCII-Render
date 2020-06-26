@@ -1,0 +1,9 @@
+#Standard Character Ordering: CJK Characters
+
+entries:
+  - !ent
+    ch:   0x04E00
+    doub: true
+    pos:  0x0500
+    end:  0xA900
+
