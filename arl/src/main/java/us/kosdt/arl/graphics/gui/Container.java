@@ -44,15 +44,11 @@ public class Container implements Component {
     }
 
     @Override
-    public boolean handleMessage(Message message) {
-        boolean stop = false;
+    public boolean handleMessage(Message message, boolean first) {
         for (int i = components.size() - 1; i >= 0; i--) {
-            stop = components.get(i).handleMessage(message);
-            if (stop) {
-                break;
-            }
+            first |= !components.get(i).handleMessage(message, first);
         }
-        return stop;
+        return !first;
     }
 
     /**

@@ -23,7 +23,7 @@ public class PrintInputs {
         }
 
         @Override
-        public boolean handleMessage(Message message) {
+        public boolean handleMessage(Message message, boolean first) {
             System.out.println(message.toString());
             return true;
         }

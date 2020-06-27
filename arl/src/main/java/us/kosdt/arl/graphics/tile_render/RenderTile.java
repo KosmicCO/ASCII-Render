@@ -9,6 +9,7 @@ public class RenderTile {
     public final Color back;
     public final Color over;
     public final int rFunc;
+    public final boolean flip;
 
     public static final int RFUNC_NONE= 0;
     public static final int RFUNC_WATER_MODE = 1;
@@ -22,10 +23,14 @@ public class RenderTile {
     }
 
     public RenderTile(int id, Color fore, Color back, int rFunc) {
-        this(id, fore, back, rFunc, Color.CLEAR);
+        this(id, fore, back, rFunc, Color.CLEAR, false);
     }
 
     public RenderTile(int id, Color fore, Color back, int rFunc, Color over) {
+        this(id, fore, back, rFunc, over, false);
+    }
+
+    public RenderTile(int id, Color fore, Color back, int rFunc, Color over, boolean flip) {
         if(fore == null || back == null || over == null) {
             throw new IllegalArgumentException("Colors cannot be null");
         }
@@ -45,6 +50,7 @@ public class RenderTile {
         this.back = back;
         this.rFunc = rFunc;
         this.over = over;
+        this.flip = flip;
     }
 
     public RenderTile setID(int nID) {

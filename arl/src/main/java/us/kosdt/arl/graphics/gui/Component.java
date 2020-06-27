@@ -22,10 +22,10 @@ public interface Component {
      * Gets a message to handle.
      *
      * @param message The message to handle.
-     * @return A mask on the handled message. If it returns true, an ordered
-     * container will not pass the message onto later components.
+     * @param first   Whether this component received the message without components before returning true on their handleMessage usage.
+     * @return A mask on the handled message. For ordered containers, the output will be negated and then applied to a count with or so that on returning true, later components will receive false as first.
      */
-    public boolean handleMessage(Message message);
+    public boolean handleMessage(Message message, boolean first);
 
     /**
      * Renders the component.

@@ -45,7 +45,7 @@ public class UnicodeMap {
         if(codepoint >= ume.len + ume.ch){
             return null;
         }
-        return new TileChar((codepoint - ume.ch) * (ume.doub ? 2 : 1) + ume.pos, ume.doub);
+        return new TileChar((codepoint - ume.ch) * (ume.doub ? 2 : 1) + ume.pos, ume.doub, codepoint);
     }
     
     public TileChar mapCodePoint(int codepoint){

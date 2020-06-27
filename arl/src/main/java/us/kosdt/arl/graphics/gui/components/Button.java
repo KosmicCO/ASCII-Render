@@ -62,7 +62,11 @@ public abstract class Button implements Component {
     }
     
     @Override
-    public boolean handleMessage(Message m) {
+    public boolean handleMessage(Message m, boolean first) {
+
+        if(!first){
+            return false;
+        }
 
         boolean caught = false;
 

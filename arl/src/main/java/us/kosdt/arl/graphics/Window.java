@@ -4,6 +4,7 @@ import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.Configuration;
+import us.kosdt.arl.encoding.UnicodeMap;
 import us.kosdt.arl.engine.Settings;
 
 import us.kosdt.arl.graphics.tile_render.FontShader;
@@ -149,6 +150,10 @@ public class Window {
 
     public FontSheet getFont() {
         return font;
+    }
+
+    public UnicodeMap getUnicodeMap() {
+        return font.unicodeMap;
     }
 
     public void setResizable(boolean resizable) {

@@ -37,7 +37,7 @@ public class EncodingsLoadTest {
         }
 
         @Override
-        public boolean handleMessage(Message message) {
+        public boolean handleMessage(Message message, boolean first) {
             if(message instanceof CharSubmit) {
                 prev = Window.window().getFont().unicodeMap.mapCodePoint(((CharSubmit) message).key);
             }

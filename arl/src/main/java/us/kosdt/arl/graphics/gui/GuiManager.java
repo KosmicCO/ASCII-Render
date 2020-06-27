@@ -32,20 +32,20 @@ public class GuiManager {
                 switch(type){
                     case MOUSE:
                         component.handleMessage(new MousePosition(Window.window().toWindowScale(mouse),
-                                Window.window().toWindowScale(deltaMouse)));
+                                Window.window().toWindowScale(deltaMouse)), true);
                         break;
                     case KEY:
-                        component.handleMessage(new KeyPress(key, pressed, changed, mods));
+                        component.handleMessage(new KeyPress(key, pressed, changed, mods), true);
                         break;
                     case CHAR:
-                        component.handleMessage(new CharSubmit(key, mods));
+                        component.handleMessage(new CharSubmit(key, mods), true);
                         break;
                     case MOUSE_BUTTON:
                         component.handleMessage(new MouseButton(key, pressed, changed,
-                                Window.window().toWindowScale(mouse)));
+                                Window.window().toWindowScale(mouse)), true);
                         break;
                     case MOUSE_WHEEL:
-                        component.handleMessage(new MouseWheel(mouse, deltaMouse));
+                        component.handleMessage(new MouseWheel(mouse, deltaMouse), true);
                         break;
                 }
             }
@@ -74,7 +74,7 @@ public class GuiManager {
         if (!typesToPass.contains(messageType)) {
             id = listener.addListener(messageType, m -> {
                 if (component != null) {
-                    component.handleMessage(m);
+                    component.handleMessage(m, true);
                 }
             });
             typesToPass.add(messageType);
