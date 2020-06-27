@@ -12,11 +12,8 @@ out VS_OUT {
     vec3 gBackColor;
     vec3 gForeColor;
     int gTileID;
+    int gFlip;
 } vs_out;
-
-out vec3 geBackColor;
-out vec3 geForeColor;
-out int geTileID;
 
 uniform int screenWidth;
 uniform int screenHeight;
@@ -228,22 +225,25 @@ layout(index = 2) subroutine(colorShader) vec3[2] simplexGradientColor(vec3 back
 }
 
 void main() {
-    float x = floor(mod(count + 0.01, 1.0 * screenWidth));
+    float x = floor(mod(count, 1.0 * screenWidth));
     float y = (count - x) / screenWidth;
     vec2 pos = vec2((x / (screenWidth) - .5) * 2, ((y / screenHeight) - .5) * 2);
     gl_Position = vec4(pos.xy, 0, 1);
 
     vec3 cols[2] = pack(aBackColor, aForeColor);
 
+    int ar = int(aRenderID); // least significant bit is the flip bit
+
     for(int i = 0; i < numberUsedModes; i++) {
-        if(usedRenderModes[i] == int(aRenderID + 0.01)){
+        if(usedRenderModes[i] == ar >> 1){
             cols = colorShaders[usedRenderModes[i] - 1](aBackColor, aForeColor, vec2(pos.x * screenWidth, pos.y * screenHeight));
         }
     }
 
     vs_out.gBackColor = mix(cols[0], aOverColor.xyz, aOverColor.w);
     vs_out.gForeColor = mix(cols[1], aOverColor.xyz, aOverColor.w);
-    vs_out.gTileID = int(aTileID + 0.01);
+    vs_out.gTileID = int(aTileID);
+    vs_out.gFlip = ar - ((ar >> 1) << 1);
 }
 
 //TODO: Implement render mods to be applied.

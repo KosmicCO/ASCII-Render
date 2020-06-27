@@ -64,7 +64,7 @@ public abstract class FontShader {
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(2, 1, GL_FLOAT, false, STRIDE, 24); // id
             glEnableVertexAttribArray(2);
-            glVertexAttribPointer(3, 1, GL_FLOAT, false, STRIDE, 28); // rFunc
+            glVertexAttribPointer(3, 1, GL_FLOAT, false, STRIDE, 28); // rFunc and flip
             glEnableVertexAttribArray(3);
             glVertexAttribPointer(4, 1, GL_FLOAT, false, STRIDE, 32); // count
             glEnableVertexAttribArray(4);
@@ -111,7 +111,7 @@ public abstract class FontShader {
                 data.put((float) t.fore.b);
 
                 data.put((float) t.id);
-                data.put((float) t.rFunc);
+                data.put((float) ((t.rFunc << 1) | (t.flip ? 1 : 0)));
                 data.put((float) count);
 
                 data.put((float) t.over.r);

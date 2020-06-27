@@ -7,6 +7,7 @@ in VS_OUT {
     vec3 gBackColor;
     vec3 gForeColor;
     int gTileID;
+    int gFlip;
 } gs_in[];
 
 out vec3 fBackColor;
@@ -23,8 +24,8 @@ void main() {
 
     float x = floor(mod(gs_in[0].gTileID + 0.01, sheetCols));
     float y = sheetRows - ((gs_in[0].gTileID - x) / sheetCols) - 1;
-    vec2 texUnit = vec2(1.0 / sheetCols, 1.0 / sheetRows);
-    vec2 texPos = vec2(x / sheetCols, y / sheetRows);
+    vec2 texUnit = vec2((gs_in[0].gFlip == 1 ? -1.0 : 1.0) / sheetCols, 1.0 / sheetRows);
+    vec2 texPos = vec2((gs_in[0].gFlip == 1 ? x + 1 : x) / sheetCols, y / sheetRows);
 
     fBackColor = gs_in[0].gBackColor;
     fForeColor = gs_in[0].gForeColor;
