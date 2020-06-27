@@ -26,9 +26,6 @@ void main() {
     vec2 texUnit = vec2(1.0 / sheetCols, 1.0 / sheetRows);
     vec2 texPos = vec2(x / sheetCols, y / sheetRows);
 
-    //vec2 texUnit = vec2(1, 1) * .5;
-    //vec2 texPos = vec2(0, 0);
-
     fBackColor = gs_in[0].gBackColor;
     fForeColor = gs_in[0].gForeColor;
 
