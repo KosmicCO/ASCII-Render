@@ -6,10 +6,10 @@ in vec2 fTexPos;
 
 uniform sampler2D tex;
 
+layout(location=0) out vec4 fragColor;
+
 void main() {
-    //TODO: colors are black, fix
     float ink = texture(tex, fTexPos).x;
     vec3 color = (fForeColor * (1 - ink)) + (fBackColor * (ink));
-    gl_FragColor = vec4(color, 1);
-    //gl_FragColor = vec4(fForeColor, 1) * texture(tex, fTexPos);
+    fragColor = vec4(color, 1);
 }

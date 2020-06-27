@@ -14,6 +14,7 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 import static us.kosdt.arl.graphics.opengl.GLObject.bindAll;
 import static us.kosdt.arl.graphics.tile_render.RenderTile.MAX_RFUNC_ID;
 
@@ -34,6 +35,7 @@ public abstract class FontShader {
             validRoutines[i] = i;
         }
         FONT_SHEET_SHADER.setUniformSubroutines(GL_VERTEX_SHADER, validRoutines);
+        glBindFragDataLocation(FONT_SHEET_SHADER.id, 0, "fragColor");
         prevTime = System.nanoTime() * 1e-9;
         startTime = prevTime;
 
