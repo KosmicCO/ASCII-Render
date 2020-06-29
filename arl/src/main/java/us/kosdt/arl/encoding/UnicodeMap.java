@@ -47,6 +47,21 @@ public class UnicodeMap {
         }
         return new TileChar((codepoint - ume.ch) * (ume.doub ? 2 : 1) + ume.pos, ume.doub, codepoint);
     }
+
+    public boolean isMapped(int codepoint) {
+        int index = Arrays.binarySearch(sortedMap, new UnicodeMapEntry(codepoint));
+
+        if(index >= 0) { // exact key found
+            return sortedMap[index].len > 0;
+        } else {
+            index = -index - 1; // non-exact matches are of the form (-(insertionPoint) - 1)
+            if(index == 0) { // less than smallest entry: Not Mapped
+                return false;
+            }
+            UnicodeMapEntry ume = sortedMap[index - 1];
+            return codepoint < ume.len + ume.ch;
+        }
+    }
     
     public TileChar mapCodePoint(int codepoint){
         int index = Arrays.binarySearch(sortedMap, new UnicodeMapEntry(codepoint));

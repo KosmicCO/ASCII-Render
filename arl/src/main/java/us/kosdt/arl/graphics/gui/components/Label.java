@@ -17,7 +17,7 @@ public abstract class Label implements Component {
     }
 
     public Label(Iterator<Integer> codepoints) {
-        this.label = Window.window().getFont().unicodeMap.mapCodePointString(codepoints);
+        this.label = Window.window().getUnicodeMap().mapCodePointString(codepoints);
     }
 
     public TileCharList getLabel(){
@@ -29,7 +29,7 @@ public abstract class Label implements Component {
     }
 
     public void setLabel(Iterator<Integer> codepoints) {
-        this.label = Window.window().getFont().unicodeMap.mapCodePointString(codepoints);
+        this.label = Window.window().getUnicodeMap().mapCodePointString(codepoints);
     }
 
     @Override
