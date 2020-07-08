@@ -1,4 +1,4 @@
-package us.kosdt.arl.graphics.gui.components.text_editors;
+package us.kosdt.arl.graphics.gui.components.text.text_editors;
 
 import us.kosdt.arl.graphics.Window;
 
@@ -11,12 +11,16 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class DoubleBufferEditor implements TextEditor {
 
-    public static final Predicate<Integer> DEFAULT_VALID = c -> c == 0x08 || c == 0x7F || Window.window().getUnicodeMap().isMapped(c);
+    public static final Predicate<Integer> SINGLE_LINE_VALID = c -> c == 0x08 || c == 0x7F || Window.window().getUnicodeMap().isMapped(c);
+    public static final Predicate<Integer> MULTI_LINE_VALID = SINGLE_LINE_VALID.or(c -> c == 0x0A);
 
     private int cursor;
     private final List<Integer> firstBuffer;
     private final List<Integer> secondBuffer;
     private final Predicate<Integer> validCodepoint;
+
+    private int earliestChange;
+    private boolean changed;
 
     public DoubleBufferEditor() {
         this(null, 0);
@@ -43,15 +47,18 @@ public class DoubleBufferEditor implements TextEditor {
         this.cursor = cursor;
 
         if(validCodepoint == null){
-            this.validCodepoint = DEFAULT_VALID;
+            this.validCodepoint = SINGLE_LINE_VALID;
         } else{
             this.validCodepoint = validCodepoint;
         }
+
+        earliestChange = 0;
+        changed = true;
     }
 
     @Override
     public int codeAt(int index) {
-        if(index >= length() || index < 0){
+        if(index >= size() || index < 0){
             throw new IndexOutOfBoundsException("Index to get code at is out of bounds");
         }
         if(index < firstBuffer.size()){
@@ -62,7 +69,7 @@ public class DoubleBufferEditor implements TextEditor {
 
     @Override
     public void moveCursor(int index) {
-        if(index > length() || index < 0){
+        if(index > size() || index < 0){
             throw new IndexOutOfBoundsException("Index to move cursor to is out of bounds");
         }
         cursor = index;
@@ -86,8 +93,16 @@ public class DoubleBufferEditor implements TextEditor {
         }
     }
 
+    private void updateEarliestChange(){
+        changed = true;
+        if(cursor < earliestChange){
+            earliestChange = cursor;
+        }
+    }
+
     private void insert(int codepoint) {
         firstBuffer.add(codepoint);
+        updateEarliestChange();
         cursor++;
     }
 
@@ -95,12 +110,14 @@ public class DoubleBufferEditor implements TextEditor {
         if (firstBuffer.size() > 0) {
             firstBuffer.remove(firstBuffer.size() - 1);
             cursor--;
+            updateEarliestChange();
         }
     }
 
     private void delete() {
         if (secondBuffer.size() > 0) {
             secondBuffer.remove(secondBuffer.size() - 1);
+            updateEarliestChange();
         }
     }
 
@@ -137,8 +154,24 @@ public class DoubleBufferEditor implements TextEditor {
     }
 
     @Override
-    public int length() {
+    public int size() {
         return firstBuffer.size() + secondBuffer.size();
+    }
+
+    @Override
+    public int earliestChange() {
+        return earliestChange;
+    }
+
+    @Override
+    public boolean isChanged() {
+        return changed;
+    }
+
+    @Override
+    public void resetChanged() {
+        earliestChange = size();
+        changed = false;
     }
 
     @Override

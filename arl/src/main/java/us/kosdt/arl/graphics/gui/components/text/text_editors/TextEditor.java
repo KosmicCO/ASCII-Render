@@ -1,4 +1,4 @@
-package us.kosdt.arl.graphics.gui.components.text_editors;
+package us.kosdt.arl.graphics.gui.components.text.text_editors;
 
 public interface TextEditor extends Iterable<Integer> {
 
@@ -12,5 +12,11 @@ public interface TextEditor extends Iterable<Integer> {
 
     boolean takeKeyInput(int key);
 
-    int length();
+    int size();
+
+    int earliestChange();
+
+    boolean isChanged();
+
+    void resetChanged();
 }

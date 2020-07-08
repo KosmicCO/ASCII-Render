@@ -44,6 +44,10 @@ public abstract class Render {
         fill(DEFAULT_TILE);
     }
 
+    public static boolean inBounds(int x, int y){
+        return 0 <= x && 0 <= y && x < renderDim.x && y < renderDim.y;
+    }
+
     public static void fill(RenderTile t) {
         if(!rendering){
             throw new RuntimeException("Attempting to draw to buffer while not in render mode");

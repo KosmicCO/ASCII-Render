@@ -2,6 +2,8 @@ package us.kosdt.arl.graphics.tile_render;
 
 import us.kosdt.arl.graphics.Color;
 
+import java.util.Objects;
+
 public class RenderTile {
 
     public final int id;
@@ -54,28 +56,28 @@ public class RenderTile {
     }
 
     public RenderTile setID(int nID) {
-        return new RenderTile(nID, fore, back, rFunc, over);
-    }
-
-    public RenderTile setRFunc(int nRFunc) {
-        return new RenderTile(id, fore, back, nRFunc, over);
+        return new RenderTile(nID, fore, back, rFunc, over, flip);
     }
 
     public RenderTile setFore(Color nFore) {
-        return new RenderTile(id, nFore, back, rFunc, over);
+        return new RenderTile(id, nFore, back, rFunc, over, flip);
     }
 
     public RenderTile setBack(Color nBack) {
-        return new RenderTile(id, fore, nBack, rFunc, over);
+        return new RenderTile(id, fore, nBack, rFunc, over, flip);
     }
 
-    public RenderTile setOver(Color nOver) {
-        return new RenderTile(id, fore, back, rFunc, nOver);
+    public RenderTile setRFunc(int nRFunc) {
+        return new RenderTile(id, fore, back, nRFunc, over, flip);
     }
+
+    public RenderTile setOver(Color nOver) { return new RenderTile(id, fore, back, rFunc, nOver, flip); }
+
+    public RenderTile setFlipped(boolean nFlip) { return new RenderTile(id, fore, back , rFunc, over, nFlip); }
 
     public RenderTile blend(RenderTile top) {
         Color blendBack = back.alphaMix(over);
-        return new RenderTile(top.id, blendBack.alphaMix(top.fore), blendBack.alphaMix(top.back), top.rFunc, top.over);
+        return new RenderTile(top.id, blendBack.alphaMix(top.fore), blendBack.alphaMix(top.back), top.rFunc, top.over, top.flip);
     }
 
     public RenderTile blendOver(Color top) {
@@ -86,21 +88,17 @@ public class RenderTile {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         RenderTile that = (RenderTile) o;
-
-        if (id != that.id) return false;
-        if (rFunc != that.rFunc) return false;
-        if (!fore.equals(that.fore)) return false;
-        return back.equals(that.back);
+        return id == that.id &&
+                rFunc == that.rFunc &&
+                flip == that.flip &&
+                fore.equals(that.fore) &&
+                back.equals(that.back) &&
+                over.equals(that.over);
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + fore.hashCode();
-        result = 31 * result + back.hashCode();
-        result = 31 * result + rFunc;
-        return result;
+        return Objects.hash(id, fore, back, over, rFunc, flip);
     }
 }

@@ -1,8 +1,10 @@
 package us.kosdt.arl.engine;
 
 import us.kosdt.arl.graphics.Window;
+import us.kosdt.arl.graphics.gui.GuiManager;
 import us.kosdt.arl.graphics.opengl.Framebuffer;
 import us.kosdt.arl.graphics.tile_render.FontShader;
+import us.kosdt.arl.graphics.tile_render.Render;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -46,6 +48,14 @@ public abstract class Core {
         } else {
             toRun.run();
         }
+    }
+
+    public static void setGuiControl() {
+        onStep(() -> {
+            Render.startRender();
+            GuiManager.GUI_MANAGER.render();
+            Render.finishRender();
+        });
     }
 
     public static void onStep(Runnable r) {

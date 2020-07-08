@@ -4,11 +4,8 @@ import us.kosdt.arl.event.Message;
 import us.kosdt.arl.event.messages.gui.CharSubmit;
 import us.kosdt.arl.event.messages.gui.KeyPress;
 import us.kosdt.arl.graphics.gui.Component;
-import us.kosdt.arl.graphics.gui.components.text_editors.DoubleBufferEditor;
-import us.kosdt.arl.graphics.gui.components.text_editors.TextEditor;
+import us.kosdt.arl.graphics.gui.components.text.text_editors.TextEditor;
 import us.kosdt.arl.util.math.Vec2d;
-
-import java.util.Iterator;
 
 public class PrintEditor implements Component {
 
