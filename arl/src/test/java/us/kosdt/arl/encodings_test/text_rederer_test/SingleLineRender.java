@@ -6,6 +6,7 @@ import us.kosdt.arl.event.messages.gui.MouseButton;
 import us.kosdt.arl.event.messages.gui.MousePosition;
 import us.kosdt.arl.graphics.Color;
 import us.kosdt.arl.graphics.gui.Component;
+import us.kosdt.arl.graphics.gui.components.text.text_editors.TextEditor;
 import us.kosdt.arl.graphics.gui.components.text.text_renderers.SingleTextLine;
 import us.kosdt.arl.graphics.tile_render.Render;
 import us.kosdt.arl.graphics.tile_render.RenderTile;
@@ -22,14 +23,19 @@ public class SingleLineRender extends SingleTextLine implements Component {
         position = pos;
     }
 
+    public SingleLineRender(TextEditor editor, int start, int size, Vec2d pos, boolean leftToRight) {
+        super(editor, start, size, leftToRight);
+        position = pos;
+    }
+
     @Override
     public boolean contains(Vec2d v) {
-        return (new Vec2d(getSize(), 1)).contains(v.sub(position));
+        return (new Vec2d(getViewSize(), 1)).contains(v.sub(position));
     }
 
     @Override
     public int getIndexFromMouse(Vec2d mouse) {
-        int visualIndex = Math.min(Math.max((isLeftToRight() ? 1 : -1) * ((int) (mouse.x - position.x - (isLeftToRight() ? 0 : getSize()))), 0), getRendered().size());
+        int visualIndex = Math.min(Math.max((isLeftToRight() ? 1 : -1) * ((int) (mouse.x - position.x - (isLeftToRight() ? 0 : getViewSize()))), 0), getRendered().size());
         if(visualIndex >= getIndices().size()){
             return getIndices().size();
         }
@@ -74,11 +80,16 @@ public class SingleLineRender extends SingleTextLine implements Component {
 
     @Override
     public void render() {
-        for (int i = 0; i < getRendered().size(); i++){
-            int x = (int) Math.floor(position.x + (isLeftToRight() ? i : getSize() - i - 1));
+        for (int i = 0; i < Math.min(getRendered().size() + 1, getViewSize()); i++){
+            int x = (int) Math.floor(position.x + (isLeftToRight() ? i : getViewSize() - i - 1));
             int y = (int) Math.floor(position.y);
             if(Render.inBounds(x, y)) {
-                RenderTile toRender = getRendered().get(i).setFore(Color.WHITE);
+                RenderTile toRender;
+                if(i == getRendered().size()){
+                    toRender = new RenderTile(0, Color.WHITE, Color.CLEAR);
+                }else {
+                    toRender = getRendered().get(i).setFore(Color.WHITE);
+                }
                 switch (getHighlightLevel(i)){
                     case HIGHLIGHT_LEVEL_CURSOR:
                         toRender = toRender.setBack(Color.RED);

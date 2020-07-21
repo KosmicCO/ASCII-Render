@@ -17,14 +17,13 @@ import java.util.function.IntUnaryOperator;
 
 import static java.lang.Character.*;
 
-public abstract class SingleTextLine implements TextRenderer {
+public abstract class SingleTextLine implements EditorRenderer {
 
     public static final int DEFAULT_ANALYSIS_START_BUFFER = 30;
 
     private static final Map<Byte, Character> REPLACE = new HashMap();
 
     static{
-        REPLACE.put(DIRECTIONALITY_UNDEFINED, (char) 0x300); // Same as non-spacing mark since these should be ignored.
         REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT, 'A');
         REPLACE.put(DIRECTIONALITY_RIGHT_TO_LEFT, (char) 0x5D0); // Aleph
         REPLACE.put(DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC, (char) 0x627); // Alef
@@ -39,6 +38,16 @@ public abstract class SingleTextLine implements TextRenderer {
         REPLACE.put(DIRECTIONALITY_SEGMENT_SEPARATOR, (char) 0x1F); // Segment Separator
         REPLACE.put(DIRECTIONALITY_WHITESPACE, ' ');
         REPLACE.put(DIRECTIONALITY_OTHER_NEUTRALS, '!');
+        
+        REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING, (char) 0x202A); // LRE code
+        REPLACE.put(DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, (char) 0x202B); // RLE code
+        REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE, (char) 0x202D); // LRO code
+        REPLACE.put(DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE, (char) 0x202E); // RLO code
+        REPLACE.put(DIRECTIONALITY_POP_DIRECTIONAL_FORMAT, (char) 0x202C); // PDF code
+        REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT_ISOLATE, (char) 0x2066); // LRI code
+        REPLACE.put(DIRECTIONALITY_RIGHT_TO_LEFT_ISOLATE, (char) 0x2067); // RLI code
+        REPLACE.put(DIRECTIONALITY_FIRST_STRONG_ISOLATE, (char) 0x2068); // FSI code
+        REPLACE.put(DIRECTIONALITY_POP_DIRECTIONAL_ISOLATE, (char) 0x2069); // PDI code
     }
 
     public static char toDirectionallyEquivalentBMP(int codepoint){
@@ -148,15 +157,15 @@ public abstract class SingleTextLine implements TextRenderer {
         return indices;
     }
 
-    protected int getStart() {
+    public int getViewStart() {
         return start;
     }
 
-    protected int getSize() {
+    public int getViewSize() {
         return size;
     }
 
-    protected boolean isLeftToRight() {
+    public boolean isLeftToRight() {
         return leftToRight;
     }
 
@@ -168,6 +177,52 @@ public abstract class SingleTextLine implements TextRenderer {
         }else{
             (new Generator(editor)).update();
         }
+    }
+
+    public void updateFromEditor() {
+        if(editor != null){
+            if(editor.earliestChange() <= analysisStart){
+                analysisStart = 0;
+            }
+            editor.resetChanged();
+            update();
+        }
+    }
+
+    public void setString(List<Integer> string) {
+        if(string == null){
+            throw new IllegalArgumentException("string cannot be null");
+        }
+        analysisStart = 0;
+        this.string = string;
+        editor = null;
+        update();
+    }
+
+    public void setEditor(TextEditor editor) {
+        if(editor == null){
+            throw new IllegalArgumentException("editor cannot be null");
+        }
+        analysisStart = 0;
+        this.editor = editor;
+        string = null;
+        update();
+    }
+
+    public void setViewStart(int index){
+        if(index < 0) {
+            throw new IllegalArgumentException("index must be greater or equal to 0");
+        }
+        this.start = index;
+        if(start < analysisStart){
+            analysisStart = 0;
+        }
+        update();
+    }
+
+    public void setViewSize(int size){
+        this.size = size;
+        update();
     }
 
     public boolean isHighlighting() {
@@ -428,7 +483,7 @@ public abstract class SingleTextLine implements TextRenderer {
                     case DIRECTIONALITY_RIGHT_TO_LEFT_ISOLATE:
                     case DIRECTIONALITY_FIRST_STRONG_ISOLATE:
                         isolateStack++;
-                        analyze |= true;
+                        analyze = true;
                         break;
                     case DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING:
                     case DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING:
@@ -437,7 +492,7 @@ public abstract class SingleTextLine implements TextRenderer {
                         if(isolateStack <= 0){
                             formatStack++;
                         }
-                        analyze |= true;
+                        analyze = true;
                         break;
                     case DIRECTIONALITY_POP_DIRECTIONAL_ISOLATE:
                         if(isolateStack > 0){
@@ -455,7 +510,7 @@ public abstract class SingleTextLine implements TextRenderer {
                                 finish = true;
                             }
                         }else{
-                            analyze |= true;
+                            analyze = true;
                         }
                         break;
                     case DIRECTIONALITY_RIGHT_TO_LEFT:
@@ -465,7 +520,7 @@ public abstract class SingleTextLine implements TextRenderer {
                                 finish = true;
                             }
                         }else{
-                            analyze |= true;
+                            analyze = true;
                         }
                         break;
                     case DIRECTIONALITY_EUROPEAN_NUMBER:
@@ -523,7 +578,7 @@ public abstract class SingleTextLine implements TextRenderer {
                     int arrayIndex = leftToRight ? i + inS - s : inds.length - i - inS + s - 1;
                     int ind = inds[arrayIndex];
                     int codepoint = get.applyAsInt(ind);
-                    addCodepoint(codepoint, ind, Character.isMirrored(codepoint) && levels[arrayIndex] % 2 == 1);
+                    addCodepoint(codepoint, ind, Character.isMirrored(codepoint) && levels[ind - inS] % 2 == 1);
                     i++;
                 }
             }else{

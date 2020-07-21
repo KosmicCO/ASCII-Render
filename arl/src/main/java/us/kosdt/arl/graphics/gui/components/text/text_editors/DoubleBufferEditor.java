@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class DoubleBufferEditor implements TextEditor {
+public class DoubleBufferEditor implements TextEditor{
 
     public static final Predicate<Integer> SINGLE_LINE_VALID = c -> c == 0x08 || c == 0x7F || Window.window().getUnicodeMap().isMapped(c);
     public static final Predicate<Integer> MULTI_LINE_VALID = SINGLE_LINE_VALID.or(c -> c == 0x0A);
@@ -175,10 +175,65 @@ public class DoubleBufferEditor implements TextEditor {
     }
 
     @Override
-    public Iterator<Integer> iterator() {
-        List<Integer> complete = new ArrayList();
-        complete.addAll(firstBuffer);
-        complete.addAll(secondBuffer);
-        return complete.iterator();
+    public void deleteRange(int start, int end) {
+        if(start < 0) {
+            throw new IllegalArgumentException("The start of the range cannot be less than zero");
+        }
+        if(start > end){
+            throw new IllegalArgumentException("The start index cannot be greater than end index");
+        }
+        moveCursor(Math.min(start, size()));
+        if(end >= size()){
+            secondBuffer.clear();
+        }else{
+            for (int i = 0; i < end - start + 1; i++){
+                secondBuffer.remove(secondBuffer.size() - 1);
+            }
+        }
+    }
+
+    @Override
+    public boolean takeCodeInput(int key, int[] highlight) {
+        if(key != GLFW_KEY_BACKSPACE && key != GLFW_KEY_DELETE){
+            return false;
+        }
+        switch (highlight.length){
+            case 2:
+                if(highlight[0] < 0 || highlight[1] < highlight[0]){
+                    throw new IllegalArgumentException("The given highlight is not a valid highlight range");
+                }
+                deleteRange(highlight[0], highlight[1]);
+                return takeKeyInput(key);
+            case 1:
+                if (highlight[0] < 0){
+                    throw new IllegalArgumentException("The first index of highlight is less than zero");
+                }
+                moveCursor(Math.min(size(), highlight[0]));
+            case 0:
+                return takeKeyInput(key);
+        }
+        return false;
+    }
+
+    public boolean takeKeyInput(int codepoint, int[] highlight){
+        if(!validCodepoint.test(codepoint)){
+            return false;
+        }
+        switch (highlight.length){
+            case 2:
+                if(highlight[0] < 0 || highlight[1] < highlight[0]){
+                    throw new IllegalArgumentException("The given highlight is not a valid highlight range");
+                }
+                deleteRange(highlight[0], highlight[1]);
+                return true;
+            case 1:
+                if (highlight[0] < 0){
+                    throw new IllegalArgumentException("The first index of highlight is less than zero");
+                }
+                moveCursor(Math.min(size(), highlight[0]));
+            case 0:
+                return takeCodeInput(codepoint);
+        }
+        return false;
     }
 }

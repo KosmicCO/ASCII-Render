@@ -46,7 +46,7 @@ public class Container implements Component {
     @Override
     public boolean handleMessage(Message message, boolean first) {
         for (int i = components.size() - 1; i >= 0; i--) {
-            first |= !components.get(i).handleMessage(message, first);
+            first &= !components.get(i).handleMessage(message, first);
         }
         return !first;
     }

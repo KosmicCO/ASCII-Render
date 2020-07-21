@@ -11,12 +11,12 @@ public class SingleTextLineTest {
 
     public static void main(String[] args) {
         Core.init();
-        int[] codepoints = {'t', 'e', 's', 't', ' ', '(', '\"', 0x5D0, '(', ' ', 0x5D1, '!', '\"', '.', 0x3042};
+        int[] codepoints = {'t', 'e', 's', 't', '1', '2', '3', ' ', '\n', '(', '\"', 0x5D0, ')', '1', '2', '3', 0x5D1, '!', 0x200F, '\"', '.', 0x3042};
         List<Integer> cps = new ArrayList();
         for (int c : codepoints){
             cps.add(c);
         }
-        SingleLineRender slr = new SingleLineRender(cps, 0, 20, new Vec2d(1, 1), false);
+        SingleLineRender slr = new SingleLineRender(cps, 0, 30, new Vec2d(1, 1), false);
         GuiManager.GUI_MANAGER.setComponent(slr);
         Core.setGuiControl();
         Core.run();

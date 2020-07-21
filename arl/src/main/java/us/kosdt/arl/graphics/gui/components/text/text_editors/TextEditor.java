@@ -1,6 +1,6 @@
 package us.kosdt.arl.graphics.gui.components.text.text_editors;
 
-public interface TextEditor extends Iterable<Integer> {
+public interface TextEditor{
 
     int codeAt(int index);
 
@@ -19,4 +19,10 @@ public interface TextEditor extends Iterable<Integer> {
     boolean isChanged();
 
     void resetChanged();
+
+    void deleteRange(int start, int end);
+
+    boolean takeCodeInput(int codepoint, int[] highlight);
+
+    boolean takeKeyInput(int codepoint, int[] highlight);
 }

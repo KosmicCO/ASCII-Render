@@ -38,8 +38,9 @@ public class PrintEditor implements Component {
     @Override
     public void render() {
         if(changed) {
-            for (int i : editor) {
-                System.out.print(Character.toString(i));
+            int sz = editor.size();
+            for (int i = 0; i < sz; i++){
+                System.out.print((char) editor.codeAt(i));
             }
             System.out.println();
             changed = false;

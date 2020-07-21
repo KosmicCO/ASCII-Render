@@ -17,4 +17,6 @@ public interface TextRenderer {
     void setCursor(int index);
 
     void setHighlight(int startIndex, int endIndex);
+
+    boolean isLeftToRight();
 }
