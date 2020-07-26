@@ -123,7 +123,7 @@ public class ThreadListener implements ParentListener {
     }
 
     /**
-     * Signals the CLIENT_LISTENER thread to close.
+     * Signals the listener thread to close.
      */
     public void stop() {
         running = false;
@@ -131,16 +131,5 @@ public class ThreadListener implements ParentListener {
 
     public boolean isRunning(){
         return running;
-    }
-
-    private static class MessageListenerPair<M extends Message> {
-
-        public Class<M> mType;
-        public Listener<M> lstn;
-
-        public MessageListenerPair(Class<M> message, Listener<M> listener) {
-            mType = message;
-            lstn = listener;
-        }
     }
 }

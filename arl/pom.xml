@@ -8,8 +8,13 @@
   <artifactId>arl</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>arl</name>
-  <url>https://github.com/KosmicCO/ASCII-Render</url>
+  <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub KosmicCO Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/KosmicCO/ASCII-Render</url>
+    </repository>
+  </distributionManagement>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

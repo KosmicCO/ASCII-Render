@@ -1,13 +1,12 @@
 package us.kosdt.arl.engine;
 
+import us.kosdt.arl.event.*;
 import us.kosdt.arl.graphics.Window;
 import us.kosdt.arl.graphics.gui.GuiManager;
 import us.kosdt.arl.graphics.opengl.Framebuffer;
-import us.kosdt.arl.graphics.tile_render.FontShader;
 import us.kosdt.arl.graphics.tile_render.Render;
 
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.*;
 
 public abstract class Core {
 
@@ -58,13 +57,20 @@ public abstract class Core {
         });
     }
 
+    public static CycleListener setListenerControl() {
+        CycleListener cycle = new CycleListener();
+        onStep(() -> {
+            cycle.cycle();
+        });
+        return cycle;
+    }
+
     public static void onStep(Runnable r) {
         onMainThread(() -> {
             onStepRun = r;
         });
     }
 
-    //TODO: Get the Input class working.
     public static void run() {
         while (!shouldClose && !(Settings.CLOSE_ON_X && Window.window().shouldClose())) {
             Input.nextFrame();
@@ -96,4 +102,5 @@ public abstract class Core {
     public static void stop() {
         shouldClose = true;
     }
+
 }
