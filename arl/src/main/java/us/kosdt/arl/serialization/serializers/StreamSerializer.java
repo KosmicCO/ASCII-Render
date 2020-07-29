@@ -1,6 +1,5 @@
 package us.kosdt.arl.serialization.serializers;
 
-import us.kosdt.arl.serialization.SerializationUtil;
 import us.kosdt.arl.serialization.Serializer;
 
 import java.io.*;
@@ -10,8 +9,8 @@ import java.io.*;
  */
 public class StreamSerializer implements Serializer {
 
-    private DataInputStream input;
-    private DataOutputStream output;
+    private final DataInputStream input;
+    private final DataOutputStream output;
 
     /**
      * Constructs this using an input and output stream to draw from and into.

@@ -1,8 +1,6 @@
 package us.kosdt.arl.serialization;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * A class for defining streams to serialize objects into. This includes general serialization points such as Socket
