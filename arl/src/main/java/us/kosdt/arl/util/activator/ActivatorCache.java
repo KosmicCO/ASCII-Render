@@ -17,7 +17,7 @@ public class ActivatorCache<T> { //TODO: Test this class
     private int size;
 
     public ActivatorCache(int casheSize, Consumer<T> activate, Consumer<T> deactivate, Function<T, Long> getID) {
-        locationMap = new HashMap((int) Math.ceil(casheSize * (1.0 / LOAD_FACTOR)), LOAD_FACTOR);
+        locationMap = new HashMap<>((int) Math.ceil(casheSize * (1.0 / LOAD_FACTOR)), LOAD_FACTOR);
         cache = new Object[casheSize];
 
         if (activate == null ^ deactivate == null) {

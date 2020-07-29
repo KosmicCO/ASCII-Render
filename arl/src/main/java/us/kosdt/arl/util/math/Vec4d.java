@@ -35,12 +35,9 @@ public class Vec4d {
                 z > 0 ? other.z : -other.z,
                 w > 0 ? other.w : -other.w);
         Vec4d positiveCompare = new Vec4d(Math.abs(x), Math.abs(y), Math.abs(z), Math.abs(w));
-        if(adjusted.x < 0 || adjusted.y < 0 || adjusted.z < 0 || adjusted.w < 0
-                || positiveCompare.x < adjusted.x || positiveCompare.y < adjusted.y
-                || positiveCompare.z < adjusted.z || positiveCompare.w < adjusted.w){
-            return false;
-        }
-        return true;
+        return !(adjusted.x < 0) && !(adjusted.y < 0) && !(adjusted.z < 0) && !(adjusted.w < 0)
+                && !(positiveCompare.x < adjusted.x) && !(positiveCompare.y < adjusted.y)
+                && !(positiveCompare.z < adjusted.z) && !(positiveCompare.w < adjusted.w);
     }
 
     public boolean containsExclusive(Vec4d other){
@@ -49,12 +46,9 @@ public class Vec4d {
                 z > 0 ? other.z : -other.z,
                 w > 0 ? other.w : -other.w);
         Vec4d positiveCompare = new Vec4d(Math.abs(x), Math.abs(y), Math.abs(z), Math.abs(w));
-        if(adjusted.x < 0 || adjusted.y < 0 || adjusted.z < 0 || adjusted.w < 0
-                || positiveCompare.x <= adjusted.x || positiveCompare.y <= adjusted.y
-                || positiveCompare.z <= adjusted.z || positiveCompare.w <= adjusted.w){
-            return false;
-        }
-        return true;
+        return !(adjusted.x < 0) && !(adjusted.y < 0) && !(adjusted.z < 0) && !(adjusted.w < 0)
+                && !(positiveCompare.x <= adjusted.x) && !(positiveCompare.y <= adjusted.y)
+                && !(positiveCompare.z <= adjusted.z) && !(positiveCompare.w <= adjusted.w);
     }
 
     public Vec4d div(double a) {
@@ -90,10 +84,7 @@ public class Vec4d {
         if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.w) != Double.doubleToLongBits(other.w)) {
-            return false;
-        }
-        return true;
+        return Double.doubleToLongBits(this.w) == Double.doubleToLongBits(other.w);
     }
 
     public Vec4d floor() {

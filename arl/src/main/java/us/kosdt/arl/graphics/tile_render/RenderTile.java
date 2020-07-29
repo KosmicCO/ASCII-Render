@@ -18,7 +18,7 @@ public class RenderTile {
     public static final int RFUNC_WIND_MODE = 2;
     public static final int RFUNC_2D_SIMPLEX_NOISE = 3;
 
-    public static int MAX_RFUNC_ID = 3;
+    public static final int MAX_RFUNC_ID = 3;
 
     public RenderTile(int id, Color fore, Color back) {
         this(id, fore, back, RFUNC_NONE);

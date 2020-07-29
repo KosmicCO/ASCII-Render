@@ -2,7 +2,6 @@ package us.kosdt.arl.input_test;
 
 import us.kosdt.arl.engine.Game;
 import us.kosdt.arl.event.Message;
-import us.kosdt.arl.event.messages.gui.CharSubmit;
 import us.kosdt.arl.graphics.gui.Component;
 import us.kosdt.arl.graphics.gui.GuiManager;
 import us.kosdt.arl.util.math.Vec2d;

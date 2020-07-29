@@ -1,13 +1,11 @@
 package us.kosdt.arl.serialization;
 
 import us.kosdt.arl.serialization.serializers.StreamSerializer;
-import us.kosdt.arl.util.math.Vec2d;
 import us.kosdt.arl.util.math.Vec4d;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.StringBufferInputStream;
 import java.util.Arrays;
 
 public class SerializationUtilTest {
@@ -49,7 +47,7 @@ public class SerializationUtilTest {
         s1 = new StreamSerializer(BI, b1);
         s1.write((Object) a2);
         s2 = new StreamSerializer(new ByteArrayInputStream(b1.toByteArray()), BO);
-        System.out.println(Arrays.toString((Object[]) s2.read(A[].class)));
+        System.out.println(Arrays.toString(s2.read(A[].class)));
 
         b1 = new ByteArrayOutputStream();
         s1 = new StreamSerializer(BI, b1);

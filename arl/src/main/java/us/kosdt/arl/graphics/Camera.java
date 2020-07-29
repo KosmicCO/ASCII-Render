@@ -1,6 +1,5 @@
 package us.kosdt.arl.graphics;
 
-import us.kosdt.arl.engine.Settings;
 import org.joml.FrustumIntersection;
 import org.joml.Matrix4d;
 import org.joml.Matrix4f;

@@ -25,7 +25,7 @@ public class Container implements Component {
      * Constructs a component container with no elements.
      */
     public Container() {
-        components = new ArrayList();
+        components = new ArrayList<>();
     }
 
     /**

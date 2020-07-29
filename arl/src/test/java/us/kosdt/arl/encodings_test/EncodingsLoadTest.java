@@ -19,7 +19,7 @@ import java.io.FileNotFoundException;
 
 public class EncodingsLoadTest {
 
-    public static void main(String[] args) throws FileNotFoundException, YamlException, InvalidFontSheetException, InvalidUnicodeMap {
+    public static void main(String[] args) {
         Game.init();
         //Window.window().setFontSheet(new FontSheet("resources/fontsheets/GNU-Unifont-CJK-A-Supplement-14"));
         GuiManager.GUI_MANAGER.setComponent(new PrintLastCharComp());

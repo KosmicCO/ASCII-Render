@@ -7,18 +7,15 @@ import us.kosdt.arl.graphics.Color;
 import us.kosdt.arl.graphics.Window;
 import us.kosdt.arl.graphics.tile_render.Render;
 import us.kosdt.arl.graphics.tile_render.RenderTile;
-import us.kosdt.arl.util.math.Vec2d;
 import us.kosdt.arl.util.math.Vec2i;
-
-import static us.kosdt.arl.util.math.MathUtils.floor;
 
 public class CoreInputsTest {
 
     public static void main(String[] args) {
         Core.init();
         Window.window().setResizable(true);
-        RenderTile mouseTile = new RenderTile((int) 'a', Color.RED, Color.RED, RenderTile.RFUNC_NONE);
-        RenderTile mouseTileBright = new RenderTile((int) 'a', Color.gray(0.4).setR(1), Color.gray(0.4).setR(1), RenderTile.RFUNC_NONE);
+        RenderTile mouseTile = new RenderTile('a', Color.RED, Color.RED, RenderTile.RFUNC_NONE);
+        RenderTile mouseTileBright = new RenderTile('a', Color.gray(0.4).setR(1), Color.gray(0.4).setR(1), RenderTile.RFUNC_NONE);
         Core.onStep(() -> {
             Render.startRender();
             Vec2i m = Window.window().toClampedDiscreteWindowScale(Input.mouse());

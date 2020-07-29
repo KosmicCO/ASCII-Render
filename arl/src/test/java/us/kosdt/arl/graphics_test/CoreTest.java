@@ -1,7 +1,6 @@
 package us.kosdt.arl.graphics_test;
 
 import us.kosdt.arl.engine.Core;
-import us.kosdt.arl.engine.Settings;
 
 public class CoreTest {
 

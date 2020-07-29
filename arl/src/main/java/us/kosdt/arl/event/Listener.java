@@ -20,5 +20,5 @@ public interface Listener<M extends Message> {
      * @param message Receiving message. It is left as M extends Message so that
      * listeners can use generic assignment to auto-cast messages.
      */
-    public void receiveMessage(M message);
+    void receiveMessage(M message);
 }

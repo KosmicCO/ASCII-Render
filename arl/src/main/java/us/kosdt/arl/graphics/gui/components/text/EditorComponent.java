@@ -8,7 +8,6 @@ import us.kosdt.arl.event.messages.gui.MousePosition;
 import us.kosdt.arl.graphics.gui.Component;
 import us.kosdt.arl.graphics.gui.components.text.text_editors.TextEditor;
 import us.kosdt.arl.graphics.gui.components.text.text_renderers.EditorRenderer;
-import us.kosdt.arl.util.math.Vec2d;
 
 public abstract class EditorComponent implements Component { // TODO: Finish
 

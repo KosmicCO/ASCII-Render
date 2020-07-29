@@ -3,7 +3,6 @@ package us.kosdt.arl.graphics.gui.components.text.text_editors;
 import us.kosdt.arl.graphics.Window;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -35,8 +34,8 @@ public class DoubleBufferEditor implements TextEditor{
     }
 
     public DoubleBufferEditor(List<Integer> string, int cursor, Predicate<Integer> validCodepoint) {
-        firstBuffer = new ArrayList();
-        secondBuffer = new ArrayList();
+        firstBuffer = new ArrayList<>();
+        secondBuffer = new ArrayList<>();
         if(string != null){
             firstBuffer.addAll(string);
         }

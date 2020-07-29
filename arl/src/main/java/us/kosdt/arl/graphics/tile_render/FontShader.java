@@ -12,8 +12,6 @@ import us.kosdt.arl.graphics.tile_render.render_modes.subfunctions.SimplexNoiseT
 
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static us.kosdt.arl.graphics.opengl.GLObject.bindAll;
 import static us.kosdt.arl.graphics.tile_render.RenderTile.MAX_RFUNC_ID;
@@ -36,8 +34,7 @@ public abstract class FontShader {
         }
         FONT_SHEET_SHADER.setUniformSubroutines(GL_VERTEX_SHADER, validRoutines);
         glBindFragDataLocation(FONT_SHEET_SHADER.id, 0, "fragColor");
-        prevTime = System.nanoTime() * 1e-9;
-        startTime = prevTime;
+        resetStartTime();
 
         SimplexNoiseTile.setUniforms(FONT_SHEET_SHADER);
 
@@ -85,6 +82,11 @@ public abstract class FontShader {
 
     public static FontSheet getFont() {
         return font;
+    }
+
+    public static void resetStartTime(){
+        prevTime = System.nanoTime() * 1e-9;
+        startTime = prevTime;
     }
 
     private static void fillVBO(RenderTile[][] vertData) {

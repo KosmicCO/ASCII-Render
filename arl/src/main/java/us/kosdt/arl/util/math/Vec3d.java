@@ -33,11 +33,8 @@ public class Vec3d {
                 y > 0 ? other.y : -other.y,
                 z > 0 ? other.z : -other.z);
         Vec3d positiveCompare = new Vec3d(Math.abs(x), Math.abs(y), Math.abs(z));
-        if(adjusted.x < 0 || adjusted.y < 0 || adjusted.z < 0
-                || positiveCompare.x < adjusted.x || positiveCompare.y < adjusted.y || positiveCompare.z < adjusted.z){
-            return false;
-        }
-        return true;
+        return !(adjusted.x < 0) && !(adjusted.y < 0) && !(adjusted.z < 0)
+                && !(positiveCompare.x < adjusted.x) && !(positiveCompare.y < adjusted.y) && !(positiveCompare.z < adjusted.z);
     }
 
     public boolean containsExclusive(Vec3d other){
@@ -45,11 +42,8 @@ public class Vec3d {
                 y > 0 ? other.y : -other.y,
                 z > 0 ? other.z : -other.z);
         Vec3d positiveCompare = new Vec3d(Math.abs(x), Math.abs(y), Math.abs(z));
-        if(adjusted.x < 0 || adjusted.y < 0 || adjusted.z < 0
-                || positiveCompare.x <= adjusted.x || positiveCompare.y <= adjusted.y || positiveCompare.z <= adjusted.z){
-            return false;
-        }
-        return true;
+        return !(adjusted.x < 0) && !(adjusted.y < 0) && !(adjusted.z < 0)
+                && !(positiveCompare.x <= adjusted.x) && !(positiveCompare.y <= adjusted.y) && !(positiveCompare.z <= adjusted.z);
     }
 
     public Vec3d cross(Vec3d other) {
@@ -86,10 +80,7 @@ public class Vec3d {
         if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
-            return false;
-        }
-        return true;
+        return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
     }
 
     public Vec3d floor() {

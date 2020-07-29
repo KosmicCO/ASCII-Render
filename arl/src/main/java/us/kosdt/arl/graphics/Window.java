@@ -24,7 +24,6 @@ public class Window {
     private final long handle;
     private int width;
     private int height;
-    private double fontSize;
     private boolean resizable;
     private FontSheet font;
 
@@ -51,7 +50,6 @@ public class Window {
         this.width = width;
         this.height = height;
         this.font = font;
-        fontSize = 24;
 
         if(this.font == null){
             handle = glfwCreateWindow(100, 100, title, NULL, NULL);
@@ -174,8 +172,8 @@ public class Window {
         boolean resizeAgain = false;
         glViewport(0, 0, nWidth, nHeight);
 
-        double tWidth = font.getWidth(fontSize);
-        double tHeight = font.getHeight(fontSize);
+        double tWidth = font.getWidth();
+        double tHeight = font.getHeight();
 
         if(tWidth > aWidth || tHeight > aHeight) {
             nWidth = (int) Math.max(width * tWidth, tWidth);
@@ -214,7 +212,7 @@ public class Window {
 
     public void setFontSheet(FontSheet font) {
         this.font = font;
-        resizeWindow((int) (width * font.getWidth(fontSize)), (int) (height * font.getHeight(fontSize)));
+        resizeWindow(width * font.getWidth(), height * font.getHeight());
         FontShader.setFont(this.font);
     }
 
@@ -238,11 +236,11 @@ public class Window {
     }
 
     private int calculateActualWidth() {
-        return (int) (width * font.getWidth(fontSize));
+        return width * font.getWidth();
     }
 
     private int calculateActualHeight() {
-        return (int) (height * font.getHeight(fontSize));
+        return height * font.getHeight();
     }
 
     public int getActualWidth() {

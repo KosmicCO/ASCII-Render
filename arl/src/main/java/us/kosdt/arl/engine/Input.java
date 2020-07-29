@@ -12,15 +12,15 @@ import static us.kosdt.arl.engine.Input.Type.*;
 
 public class Input {
 
-    private static final List<ReactiveInputListener> RI_LISTENER = new ArrayList();
+    private static final List<ReactiveInputListener> RI_LISTENER = new ArrayList<>();
 
-    private static BitSet keys = new BitSet();
+    private static final BitSet keys = new BitSet();
     private static BitSet prevKeys = new BitSet();
 
     private static Vec2d mouse = new Vec2d(0, 0);
     private static Vec2d prevMouse = new Vec2d(0, 0);
 
-    private static BitSet buttons = new BitSet();
+    private static final BitSet buttons = new BitSet();
     private static BitSet prevButtons = new BitSet();
 
     private static Vec2d mouseWheel = new Vec2d(0, 0);
@@ -28,7 +28,7 @@ public class Input {
 
     static void init() {
         Window.window().setCursorPosCallback((window, xpos, ypos) -> {
-            Vec2d nMouse = new Vec2d(((double) xpos) / Window.window().getActualWidth(), 1 - ((double) ypos) / Window.window().getActualHeight());
+            Vec2d nMouse = new Vec2d(xpos / Window.window().getActualWidth(), 1 - ypos / Window.window().getActualHeight());
             RI_LISTENER.forEach(ril -> ril.receiveInput(MOUSE, nMouse, nMouse.sub(mouse), 0, false, false, 0));
             mouse = nMouse;
         });
@@ -107,8 +107,10 @@ public class Input {
         return mouseWheel;
     }
 
+    public static Vec2d mouseWheelDelta() { return mouseWheel.sub(prevMouseWheel); }
+
     public interface ReactiveInputListener{
-        public void receiveInput(Type type, Vec2d mouse, Vec2d deltaMouse, int key, boolean pressed, boolean changed, int mods);
+        void receiveInput(Type type, Vec2d mouse, Vec2d deltaMouse, int key, boolean pressed, boolean changed, int mods);
     }
 
     public enum Type{
@@ -116,6 +118,6 @@ public class Input {
         KEY,
         CHAR,
         MOUSE_BUTTON,
-        MOUSE_WHEEL;
+        MOUSE_WHEEL
     }
 }

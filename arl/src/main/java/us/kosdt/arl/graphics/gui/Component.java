@@ -16,7 +16,7 @@ public interface Component {
      * @param v The vector to check.I
      * @return Whether the vector v is contained by this.
      */
-    public boolean contains(Vec2d v);
+    boolean contains(Vec2d v);
 
     /**
      * Gets a message to handle.
@@ -25,10 +25,10 @@ public interface Component {
      * @param first   Whether this component received the message without components before returning true on their handleMessage usage.
      * @return A mask on the handled message. For ordered containers, the output will be negated and then applied to a count with or so that on returning true, later components will receive false as first.
      */
-    public boolean handleMessage(Message message, boolean first);
+    boolean handleMessage(Message message, boolean first);
 
     /**
      * Renders the component.
      */
-    public void render();
+    void render();
 }

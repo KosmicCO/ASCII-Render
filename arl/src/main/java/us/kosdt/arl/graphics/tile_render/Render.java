@@ -6,10 +6,10 @@ import us.kosdt.arl.graphics.Window;
 import us.kosdt.arl.util.math.Vec2d;
 import us.kosdt.arl.util.math.Vec2i;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import static us.kosdt.arl.graphics.tile_render.RenderTile.MAX_RFUNC_ID;
 import static us.kosdt.arl.graphics.tile_render.RenderTile.RFUNC_NONE;
@@ -21,7 +21,7 @@ public abstract class Render {
     private static RenderTile[][] lastTileBuffer;
     private static RenderTile[][] tileBuffer;
 
-    public static RenderTile DEFAULT_TILE = new RenderTile(0, Color.WHITE, Color.BLACK, RFUNC_NONE);
+    public static final RenderTile DEFAULT_TILE = new RenderTile(0, Color.WHITE, Color.BLACK, RFUNC_NONE);
 
     private static boolean rendering = false;
 
@@ -53,9 +53,7 @@ public abstract class Render {
             throw new RuntimeException("Attempting to draw to buffer while not in render mode");
         }
         for (int x = 0; x < tileBuffer.length; x++) {
-            for(int y = 0; y < tileBuffer[x].length; y++) {
-                tileBuffer[x][y] = t;
-            }
+            Arrays.fill(tileBuffer[x], t);
         }
     }
 
@@ -140,8 +138,7 @@ public abstract class Render {
     }
 
     public static void drawRectExclusive(RenderTile t, Vec2i pos, Vec2i dim){
-        Vec2i corner = pos.add(dim.add(new Vec2i(dim.x == 0 ? 0 : (dim.x > 0 ? -1 : 1),
-                dim.y == 0 ? 0 : (dim.y > 0 ? -1 : 1))));
+        Vec2i corner = pos.add(dim.add(new Vec2i(Integer.compare(0, dim.x), Integer.compare(0, dim.y))));
         drawRect(t, pos.x, pos.y, corner.x, corner.y);
     }
 
@@ -177,7 +174,7 @@ public abstract class Render {
     }
 
     private static int[] calculateRenderModes() {
-        Set<Integer> modes = new TreeSet();
+        Set<Integer> modes = new TreeSet<>();
         for(RenderTile[] ta : tileBuffer){
             for(RenderTile t : ta){
                 if(t.rFunc >= 0 && t.rFunc != RFUNC_NONE && t.rFunc <= MAX_RFUNC_ID){
@@ -185,7 +182,7 @@ public abstract class Render {
                 }
             }
         }
-        Integer[] classInts = (Integer[]) modes.toArray(new Integer[0]);
+        Integer[] classInts = modes.toArray(new Integer[0]);
         int[] ints = new int[classInts.length];
         for(int i = 0; i < classInts.length; i++) {
             ints[i] = classInts[i];

@@ -5,7 +5,6 @@
  */
 package us.kosdt.arl.event.messages.gui;
 
-import org.w3c.dom.ls.LSOutput;
 import us.kosdt.arl.event.Message;
 
 /**

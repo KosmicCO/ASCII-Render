@@ -5,6 +5,7 @@ import us.kosdt.arl.util.math.Vec2d;
 import us.kosdt.arl.util.math.Vec3d;
 import us.kosdt.arl.util.math.Vec4d;
 
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,20 +17,20 @@ import java.util.*;
  */
 public final class SerializationUtil {
 
-    private static final Map<Class, Integer> ALG_ID = new HashMap();
-    private static final Map<Class, Class> ALIASES = new HashMap();
+    private static final Map<Class, Integer> ALG_ID = new HashMap<>();
+    private static final Map<Class, Class> ALIASES = new HashMap<>();
 
-    private static final List<Reader<Serializer, Object>> READERS = new ArrayList();
-    private static final List<Writer<Serializer, Object>> WRITERS = new ArrayList();
+    private static final List<Reader<Serializer, Object>> READERS = new ArrayList<>();
+    private static final List<Writer<Serializer, Object>> WRITERS = new ArrayList<>();
 
     static{
         registerBasicType(Boolean.class, DataInputStream::readBoolean, DataOutputStream::writeBoolean);
-        registerBasicType(Byte.class, DataInputStream::readByte, (o, b) -> o.writeByte(b));
+        registerBasicType(Byte.class, DataInputStream::readByte, (Writer<DataOutputStream, Byte>) DataOutputStream::writeByte);
         registerBasicType(Float.class, DataInputStream::readFloat, DataOutputStream::writeFloat);
         registerBasicType(Double.class, DataInputStream::readDouble, DataOutputStream::writeDouble);
         registerBasicType(Integer.class, DataInputStream::readInt, DataOutputStream::writeInt);
         registerBasicType(Long.class, DataInputStream::readLong, DataOutputStream::writeLong);
-        registerBasicType(String.class, i -> i.readUTF(), DataOutputStream::writeUTF);
+        registerBasicType(String.class, DataInput::readUTF, DataOutputStream::writeUTF);
 
         registerType(Color.class, ser -> new Color(ser.read(Double.class), ser.read(Double.class), ser.read(Double.class), ser.read(Double.class)),
                 (ser, o) -> ser.write(o.r, o.g, o.b, o.a));
@@ -376,7 +377,7 @@ public final class SerializationUtil {
      * @param <R> Type of object to deserialize.
      */
     @FunctionalInterface
-    public static interface Reader<T, R> {
+    public interface Reader<T, R> {
 
         /**
          * Deserializes object from given deserialization object.
@@ -384,7 +385,7 @@ public final class SerializationUtil {
          * @return The deserialized object.
          * @throws IOException If there is a problem deserializing.
          */
-        public R read(T t) throws IOException;
+        R read(T t) throws IOException;
     }
 
     /**
@@ -393,7 +394,7 @@ public final class SerializationUtil {
      * @param <R> Type of object to serialize.
      */
     @FunctionalInterface
-    public static interface Writer<T, R> {
+    public interface Writer<T, R> {
 
         /**
          * Serializes object into given serialization object.
@@ -401,6 +402,6 @@ public final class SerializationUtil {
          * @param r Object to serialize.
          * @throws IOException If there is a problem serializing.
          */
-        public void write(T t, R r) throws IOException;
+        void write(T t, R r) throws IOException;
     }
 }

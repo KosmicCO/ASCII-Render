@@ -19,11 +19,11 @@ import us.kosdt.arl.graphics.Window;
 
 public class GLState {
 
-    private static GLState state = new GLState();
+    private static final GLState state = new GLState();
 
     private int blendFunc1, blendFunc2;
-    private final Map<Integer, BufferObject> buffers = new HashMap();
-    private final Map<Integer, Boolean> flags = new HashMap();
+    private final Map<Integer, BufferObject> buffers = new HashMap<>();
+    private final Map<Integer, Boolean> flags = new HashMap<>();
     private Framebuffer framebuffer = null;
     private Shader shader = null;
     private Texture[] texture = new Texture[32];

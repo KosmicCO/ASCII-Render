@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class SimplexNoiseTile {
 
-    private static SimplexNoiseTile noise = new SimplexNoiseTile(new Random());
+    private static final SimplexNoiseTile noise = new SimplexNoiseTile(new Random());
 
     private static final float F2 = (float)(0.5 * (Math.sqrt(3.0) - 1.0));
     private static final float G2 = (float) ((3.0 - Math.sqrt(3.0)) / 6.0);
@@ -74,13 +74,13 @@ public class SimplexNoiseTile {
             -1, -1, -1, 0
     };
 
-    private int perm[] = new int[512];
-    private int permMod12[] = new int[512];
+    private final int[] perm = new int[512];
+    private final int[] permMod12 = new int[512];
 
     private SimplexNoiseTile(Random random) {
         int[] p = new int[256];
         for (int i = 0; i < 256; i++){
-            p[i] = (int) i;
+            p[i] = i;
         }
 
         for (int i = 255; i > 0; i--){
@@ -92,7 +92,7 @@ public class SimplexNoiseTile {
 
         for (int i = 0; i < 512; i++) {
             perm[i] = p[i & 255];
-            permMod12[i] = (int) (perm[i] % 12);
+            permMod12[i] = perm[i] % 12;
         }
     }
 

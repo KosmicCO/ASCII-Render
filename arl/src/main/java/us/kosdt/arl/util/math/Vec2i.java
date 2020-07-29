@@ -1,6 +1,5 @@
 package us.kosdt.arl.util.math;
 
-import org.joml.Vector2d;
 import org.joml.Vector2i;
 
 public class Vec2i {
@@ -31,19 +30,13 @@ public class Vec2i {
     public boolean contains(Vec2i other){
         Vec2i adjusted = new Vec2i(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
         Vec2i positiveCompare = new Vec2i(Math.abs(x), Math.abs(y));
-        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x < adjusted.x || positiveCompare.y < adjusted.y){
-            return false;
-        }
-        return true;
+        return adjusted.x >= 0 && adjusted.y >= 0 && positiveCompare.x >= adjusted.x && positiveCompare.y >= adjusted.y;
     }
 
     public boolean containsExclusive(Vec2i other){
         Vec2i adjusted = new Vec2i(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
         Vec2i positiveCompare = new Vec2i(Math.abs(x), Math.abs(y));
-        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x <= adjusted.x || positiveCompare.y <= adjusted.y){
-            return false;
-        }
-        return true;
+        return adjusted.x >= 0 && adjusted.y >= 0 && positiveCompare.x > adjusted.x && positiveCompare.y > adjusted.y;
     }
 
     public Vec2i div(int a) {
@@ -73,10 +66,7 @@ public class Vec2i {
         if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-            return false;
-        }
-        return true;
+        return Double.doubleToLongBits(this.y) == Double.doubleToLongBits(other.y);
     }
 
     @Override

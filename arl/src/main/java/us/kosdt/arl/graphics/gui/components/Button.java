@@ -68,9 +68,7 @@ public abstract class Button implements Component {
             return false;
         }
 
-        boolean caught = false;
-
-        caught |= Message.onMessageType(m, MouseButton.class, mb -> {
+        boolean caught = Message.onMessageType(m, MouseButton.class, mb -> {
             switch (state) {
                 case HOVERED:
                     if (mb.state && mb.changed) {
