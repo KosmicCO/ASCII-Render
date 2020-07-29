@@ -6,7 +6,7 @@ import static us.kosdt.arl.util.math.MathUtils.mod;
 
 public class Quaternion {
 
-    public static Quaternion IDENTITY = new Quaternion(1, 0, 0, 0);
+    public static final Quaternion IDENTITY = new Quaternion(1, 0, 0, 0);
 
     public final double a, b, c, d;
 

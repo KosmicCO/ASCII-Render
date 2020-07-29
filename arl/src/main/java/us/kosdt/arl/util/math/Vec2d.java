@@ -30,19 +30,13 @@ public class Vec2d {
     public boolean contains(Vec2d other){
         Vec2d adjusted = new Vec2d(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
         Vec2d positiveCompare = new Vec2d(Math.abs(x), Math.abs(y));
-        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x < adjusted.x || positiveCompare.y < adjusted.y){
-            return false;
-        }
-        return true;
+        return !(adjusted.x < 0) && !(adjusted.y < 0) && !(positiveCompare.x < adjusted.x) && !(positiveCompare.y < adjusted.y);
     }
 
     public boolean containsExclusive(Vec2d other){
         Vec2d adjusted = new Vec2d(x > 0 ? other.x : -other.x, y > 0 ? other.y : -other.y);
         Vec2d positiveCompare = new Vec2d(Math.abs(x), Math.abs(y));
-        if(adjusted.x < 0 || adjusted.y < 0 || positiveCompare.x <= adjusted.x || positiveCompare.y <= adjusted.y){
-            return false;
-        }
-        return true;
+        return !(adjusted.x < 0) && !(adjusted.y < 0) && !(positiveCompare.x <= adjusted.x) && !(positiveCompare.y <= adjusted.y);
     }
 
     public Vec2d div(double a) {
@@ -72,10 +66,7 @@ public class Vec2d {
         if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
-            return false;
-        }
-        return true;
+        return Double.doubleToLongBits(this.y) == Double.doubleToLongBits(other.y);
     }
 
     public Vec2d floor() {

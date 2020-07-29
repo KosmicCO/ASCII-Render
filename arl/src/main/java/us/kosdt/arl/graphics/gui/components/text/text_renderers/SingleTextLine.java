@@ -1,7 +1,6 @@
 package us.kosdt.arl.graphics.gui.components.text.text_renderers;
 
 import us.kosdt.arl.encoding.TileChar;
-import us.kosdt.arl.encoding.UnicodeMap;
 import us.kosdt.arl.graphics.Color;
 import us.kosdt.arl.graphics.Window;
 import us.kosdt.arl.graphics.gui.components.text.text_editors.TextEditor;
@@ -21,7 +20,7 @@ public abstract class SingleTextLine implements EditorRenderer {
 
     public static final int DEFAULT_ANALYSIS_START_BUFFER = 30;
 
-    private static final Map<Byte, Character> REPLACE = new HashMap();
+    private static final Map<Byte, Character> REPLACE = new HashMap<>();
 
     static{
         REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT, 'A');
@@ -170,8 +169,8 @@ public abstract class SingleTextLine implements EditorRenderer {
     }
 
     private void update() {
-        rendered = new ArrayList();
-        indices = new ArrayList();
+        rendered = new ArrayList<>();
+        indices = new ArrayList<>();
         if(editor == null){
             (new Generator(string)).update();
         }else{
@@ -197,6 +196,20 @@ public abstract class SingleTextLine implements EditorRenderer {
         this.string = string;
         editor = null;
         update();
+    }
+
+    public void setAnalysisStartBuffer(int length){
+        if(length > analysisStartBuffer){
+            analysisStart = 0;
+        }
+        analysisStartBuffer = length;
+    }
+
+    public void setLeftToRight(boolean ltr){
+        if(ltr != leftToRight){
+            analysisStart = 0;
+        }
+        leftToRight = ltr;
     }
 
     public void setEditor(TextEditor editor) {
@@ -373,8 +386,8 @@ public abstract class SingleTextLine implements EditorRenderer {
 
     private class Generator {
 
-        IntUnaryOperator get;
-        int stringSize;
+        final IntUnaryOperator get;
+        final int stringSize;
 
         Generator(TextEditor e) {
             stringSize = e.size();

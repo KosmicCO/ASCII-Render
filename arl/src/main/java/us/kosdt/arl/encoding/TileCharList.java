@@ -6,14 +6,14 @@ import java.util.stream.Stream;
 
 public class TileCharList extends AbstractList<TileChar> {
 
-    private TileChar[] array;
+    private final TileChar[] array;
 
     public TileCharList(TileChar[]... tca){
         array = Stream.of(tca).flatMap(Stream::of).toArray(TileChar[]::new);
     }
 
     public TileCharList(List<TileChar> tcl){
-        array = tcl.toArray(new TileChar[tcl.size()]);
+        array = tcl.toArray(new TileChar[0]);
     }
 
     @Override

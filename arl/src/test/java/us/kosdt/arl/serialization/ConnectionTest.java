@@ -10,7 +10,7 @@ import static java.lang.Thread.sleep;
 
 public class ConnectionTest {
 
-    private static List<Connection> conns = new ArrayList();
+    private static final List<Connection> conns = new ArrayList<>();
 
     public static void main(String[] args) throws InterruptedException {
 

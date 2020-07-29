@@ -19,7 +19,7 @@ import us.kosdt.arl.util.math.Vec4d;
 
 public class Shader extends GLObject {
 
-    private final HashMap<String, Integer> uniformLocations = new HashMap();
+    private final HashMap<String, Integer> uniformLocations = new HashMap<>();
 
     private Shader(String vertexShaderSource, String geometryShaderSource, String fragmentShaderSource) {
         super(glCreateProgram());

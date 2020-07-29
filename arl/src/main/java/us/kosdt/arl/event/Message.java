@@ -21,7 +21,7 @@ public interface Message {
      * type.
      * @return Returns whether the message was handled.
      */
-    public static <M extends Message> boolean onMessageType(Message message, Class<M> messageType, Consumer<M> handler){
+    static <M extends Message> boolean onMessageType(Message message, Class<M> messageType, Consumer<M> handler){
         if(message.getClass().equals(messageType)){
             handler.accept((M) message);
             return true;
@@ -41,7 +41,7 @@ public interface Message {
      * @return Returns false if the message was not handled, else returns the
      * output from the handler.
      */
-    public static <M extends Message> boolean onMessageType(Message message, Class<M> messageType, Predicate<M> handler) {
+    static <M extends Message> boolean onMessageType(Message message, Class<M> messageType, Predicate<M> handler) {
         if (message.getClass().equals(messageType)) {
             return handler.test((M) message);
         }

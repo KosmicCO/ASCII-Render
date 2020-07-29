@@ -18,9 +18,9 @@ public class ThreadListener implements ParentListener {
     private boolean running;
 
     public ThreadListener() {
-        messageQueue = new ConcurrentLinkedQueue();
-        receivers = new ConcurrentHashMap();
-        receiverID = new ConcurrentHashMap();
+        messageQueue = new ConcurrentLinkedQueue<>();
+        receivers = new ConcurrentHashMap<>();
+        receiverID = new ConcurrentHashMap<>();
         running = false;
     }
 
@@ -90,7 +90,7 @@ public class ThreadListener implements ParentListener {
     @Override
     public void receiveMessage(Message message) {
         if (!receivers.containsKey(message.getClass())) {
-            receivers.put(message.getClass(), new ArrayList());
+            receivers.put(message.getClass(), new ArrayList<>());
         }
         messageQueue.add(message);
     }

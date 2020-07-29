@@ -12,7 +12,7 @@ public class SingleTextLineTest {
     public static void main(String[] args) {
         Core.init();
         int[] codepoints = {'t', 'e', 's', 't', '1', '2', '3', ' ', '\n', '(', '\"', 0x5D0, ')', '1', '2', '3', 0x5D1, '!', 0x200F, '\"', '.', 0x3042};
-        List<Integer> cps = new ArrayList();
+        List<Integer> cps = new ArrayList<>();
         for (int c : codepoints){
             cps.add(c);
         }

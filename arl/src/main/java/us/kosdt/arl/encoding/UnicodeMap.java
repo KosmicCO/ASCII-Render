@@ -3,7 +3,6 @@ package us.kosdt.arl.encoding;
 import com.esotericsoftware.yamlbeans.YamlException;
 import com.esotericsoftware.yamlbeans.YamlReader;
 import us.kosdt.arl.encoding.exceptions.InvalidUnicodeMap;
-import us.kosdt.arl.graphics.FontSheet;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,7 +13,7 @@ public class UnicodeMap {
     private final UnicodeMapEntry[] sortedMap;
 
     public UnicodeMap(String... files) throws FileNotFoundException, YamlException, InvalidUnicodeMap {
-        List<List<UnicodeMapEntry>> entriesList = new ArrayList();
+        List<List<UnicodeMapEntry>> entriesList = new ArrayList<>();
 
         for (String file : files){
             if(file != null){
@@ -22,7 +21,7 @@ public class UnicodeMap {
             }
         }
 
-        List<UnicodeMapEntry> loadedMap = new ArrayList();
+        List<UnicodeMapEntry> loadedMap = new ArrayList<>();
         for (List<UnicodeMapEntry> mel : entriesList){
             loadedMap.addAll(mel);
         }
@@ -31,7 +30,7 @@ public class UnicodeMap {
             mapEntryYAML.fillInfo();
         }
 
-        sortedMap = loadedMap.toArray(new UnicodeMapEntry[loadedMap.size()]);
+        sortedMap = loadedMap.toArray(new UnicodeMapEntry[0]);
         Arrays.sort(sortedMap);
     }
 
@@ -78,7 +77,7 @@ public class UnicodeMap {
     }
 
     public TileCharList mapCodePointString(Iterator<Integer> it){
-        List<TileChar> tcl = new ArrayList();
+        List<TileChar> tcl = new ArrayList<>();
         it.forEachRemaining(cp -> tcl.add(mapCodePoint(cp))); //TODO: Have support for characters which change form depending on characters around them.
         return new TileCharList(tcl);
     }

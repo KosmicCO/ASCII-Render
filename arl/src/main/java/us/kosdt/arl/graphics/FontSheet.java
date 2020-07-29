@@ -60,7 +60,7 @@ public class FontSheet {
         maxTileID = info.max_tile_id;
 
         if(info.map != null){
-            unicodeMap = new UnicodeMap(info.map.toArray(new String[info.map.size()]));
+            unicodeMap = new UnicodeMap(info.map.toArray(new String[0]));
         }else {
             unicodeMap = new UnicodeMap(mapDir);
         }
@@ -77,12 +77,12 @@ public class FontSheet {
         return tileHeight;
     }
 
-    public double getHeight(double size){
-        return size;
+    public int getHeight(){
+        return tileHeight;
     }
 
-    public double getWidth(double size){
-        return ratio * size;
+    public int getWidth(){
+        return tileWidth;
     }
 
     public String toString() {

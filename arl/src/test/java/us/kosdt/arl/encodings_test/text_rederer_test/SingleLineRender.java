@@ -16,7 +16,7 @@ import java.util.List;
 
 public class SingleLineRender extends SingleTextLine implements Component {
 
-    private Vec2d position;
+    private final Vec2d position;
 
     public SingleLineRender(List<Integer> string, int start, int size, Vec2d pos, boolean leftToRight) {
         super(string, start, size, leftToRight);

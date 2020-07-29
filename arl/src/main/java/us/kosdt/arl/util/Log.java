@@ -1,8 +1,8 @@
 package us.kosdt.arl.util;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -19,18 +19,18 @@ public abstract class Log {
 
     public static void close() {
         try {
-            PrintWriter writer = new PrintWriter("logs/latest.txt", "UTF-8");
+            PrintWriter writer = new PrintWriter("logs/latest.txt", StandardCharsets.UTF_8);
             writer.print(toWrite);
             writer.close();
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (FORCE_SAVE || save) {
             try {
-                PrintWriter writer = new PrintWriter("logs/log-" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()) + ".txt", "UTF-8");
+                PrintWriter writer = new PrintWriter("logs/log-" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()) + ".txt", StandardCharsets.UTF_8);
                 writer.print(toWrite);
                 writer.close();
-            } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+            } catch (IOException ex) {
                 Logger.getLogger(Log.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

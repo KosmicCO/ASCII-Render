@@ -9,7 +9,7 @@ import static java.lang.Character.*;
 
 public class BidiTest1 {
 
-    private static Map<Byte, Character> REPLACE = new HashMap();
+    private static final Map<Byte, Character> REPLACE = new HashMap<>();
 
     static{
         REPLACE.put(DIRECTIONALITY_UNDEFINED, (char) 0x300); // Same as non-spacing mark since these should be ignored.

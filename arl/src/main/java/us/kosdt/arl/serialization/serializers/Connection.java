@@ -23,8 +23,8 @@ public class Connection implements Serializer {
     private final Object writeMutex = new Object();
 
     private boolean closed = false;
-    private final List<Runnable> onClose = new LinkedList();
-    private final Map<Short, Runnable> handlerMap = new HashMap();
+    private final List<Runnable> onClose = new LinkedList<>();
+    private final Map<Short, Runnable> handlerMap = new HashMap<>();
 
     /**
      * Creates a new 'Connection' {@link Connection} from a 'Socket' {@link Socket}.

@@ -14,7 +14,7 @@ public abstract class Core {
 
     private static long prevTime;
     private static double dt;
-    private static final Collection<Runnable> TO_RUN = new LinkedList();
+    private static final Collection<Runnable> TO_RUN = new LinkedList<>();
     private static boolean shouldClose;
     private static Runnable onStepRun;
 
@@ -59,16 +59,12 @@ public abstract class Core {
 
     public static CycleListener setListenerControl() {
         CycleListener cycle = new CycleListener();
-        onStep(() -> {
-            cycle.cycle();
-        });
+        onStep(cycle::cycle);
         return cycle;
     }
 
     public static void onStep(Runnable r) {
-        onMainThread(() -> {
-            onStepRun = r;
-        });
+        onMainThread(() -> onStepRun = r);
     }
 
     public static void run() {
@@ -90,7 +86,7 @@ public abstract class Core {
             }
             prevTime = time;
 
-            clearToRun().forEach(r -> r.run());
+            clearToRun().forEach(Runnable::run);
             if(onStepRun != null) {
                 onStepRun.run();
             }

@@ -10,7 +10,7 @@ import us.kosdt.arl.util.math.Vec2d;
 public class PrintEditor implements Component {
 
     private boolean changed;
-    private TextEditor editor;
+    private final TextEditor editor;
 
     public PrintEditor(TextEditor te){
         changed = false;

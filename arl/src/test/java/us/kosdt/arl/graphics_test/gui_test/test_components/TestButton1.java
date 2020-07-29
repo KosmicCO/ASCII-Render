@@ -9,9 +9,9 @@ import us.kosdt.arl.util.math.Vec2i;
 
 public class TestButton1 extends Button {
 
-    private Vec2i position;
-    private Vec2i size;
-    private String onPress;
+    private final Vec2i position;
+    private final Vec2i size;
+    private final String onPress;
 
     /**
      * Creates a new button with the given state.

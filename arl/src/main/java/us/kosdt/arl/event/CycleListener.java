@@ -16,9 +16,9 @@ public class CycleListener implements ParentListener {
     private final Map<Integer, MessageListenerPair> receiverID;
 
     public CycleListener(){
-        messageQueue = new ConcurrentLinkedQueue();
-        receivers = new ConcurrentHashMap();
-        receiverID = new ConcurrentHashMap();
+        messageQueue = new ConcurrentLinkedQueue<>();
+        receivers = new ConcurrentHashMap<>();
+        receiverID = new ConcurrentHashMap<>();
     }
 
     @Override
@@ -28,7 +28,7 @@ public class CycleListener implements ParentListener {
                 receivers.get(messageType).add(listener);
             }
         } else {
-            List listenerList = new ArrayList();
+            List<Listener> listenerList = new ArrayList<>();
             listenerList.add(listener);
             receivers.put(messageType, listenerList);
         }
@@ -72,10 +72,10 @@ public class CycleListener implements ParentListener {
     @Override
     public void receiveMessage(Message message) {
         if (!receivers.containsKey(message.getClass())) {
-            receivers.put(message.getClass(), new ArrayList());
+            receivers.put(message.getClass(), new ArrayList<>());
         }
         messageQueue.add(message);
     }
 
-    public class CycleMessage implements Message {}
+    public static class CycleMessage implements Message {}
 }

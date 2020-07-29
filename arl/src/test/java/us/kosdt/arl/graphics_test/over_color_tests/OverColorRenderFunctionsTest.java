@@ -9,7 +9,6 @@ import us.kosdt.arl.graphics.tile_render.FontShader;
 import us.kosdt.arl.graphics.tile_render.Render;
 import us.kosdt.arl.graphics.tile_render.RenderTile;
 import us.kosdt.arl.graphics.tile_render.render_modes.WaterMode;
-import us.kosdt.arl.util.math.Vec2d;
 
 import static java.lang.Math.PI;
 
@@ -20,12 +19,12 @@ public class OverColorRenderFunctionsTest {
         Window.window().setResizable(true);
         FontShader.setRenderModeUniforms(new WaterMode(PI / 6.0, .25, 1, 0.4, 1.4));
         Color ocean = new Color(0, .467, .745);
-        RenderTile water = new RenderTile((int) '~', ocean, ocean.multRGB(0.7), RenderTile.RFUNC_WATER_MODE);
+        RenderTile water = new RenderTile('~', ocean, ocean.multRGB(0.7), RenderTile.RFUNC_WATER_MODE);
         Core.onStep(() -> {
             Render.startRender();
             Render.fill(water);
             Render.fill(water.setOver(Color.BLACK.setA(0.5)), (x, y) -> x <= y);
-            Render.drawRect(new RenderTile((int) '~', Color.CLEAR, Color.CLEAR, RenderTile.RFUNC_WATER_MODE), 0, 0, 30, 10);
+            Render.drawRect(new RenderTile('~', Color.CLEAR, Color.CLEAR, RenderTile.RFUNC_WATER_MODE), 0, 0, 30, 10);
             Render.finishRender();
         });
         Core.run();
