@@ -213,7 +213,7 @@ public class Connection implements Serializer {
         closed = true;
         try{
             socket.close();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         handlerMap.clear();
         onClose.forEach(Runnable::run);

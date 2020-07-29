@@ -1,8 +1,9 @@
 package us.kosdt.arl.serialization;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * A class for defining streams to serialize objects into. This includes general serialization points such as Socket
@@ -67,13 +68,13 @@ public interface Serializer {
      * Returns the 'InputStream' {@link java.io.InputStream} of this.
      * @return The 'InputStream' {@link java.io.InputStream} of this.
      */
-    DataInputStream getInputStream();
+    InputStream getInputStream();
 
     /**
      * Returns the 'OutputStream' {@link java.io.OutputStream} of this.
      * @return The 'OutputStream' {@link java.io.OutputStream} of this.
      */
-    DataOutputStream getOutputStream();
+    OutputStream getOutputStream();
 
     /**
      * Closes the serializer and associated streams.

@@ -143,9 +143,12 @@ public final class SerializationUtil {
      * @param <S> The type that will be output by deserialization.
      * @return The method for deserializing the given type.
      */
-    public static <T extends S, S> Reader<Serializer, S> getReader(Class<T> c){
+    public static <T> Reader<Serializer, T> getReader(Class<T> c){
+        if(isAliased(c)){
+            throw new IllegalArgumentException("Cannot read in type registered with an aliased reader");
+        }
         int index = getAlgID(c);
-        return index == -1 ? null : (Reader<Serializer, S>) READERS.get(index);
+        return index == -1 ? null : (Reader<Serializer, T>) READERS.get(index);
     }
 
     /**
@@ -203,7 +206,7 @@ public final class SerializationUtil {
      * @return The method id.
      */
     public static <T extends SerializeWritable> int registerType(Class<T> c, Reader<Serializer, T> reader){
-        return registerType(c, reader, (ser, o) -> ((SerializeWritable) o).write(ser));
+        return registerType(c, reader, (ser, o) -> o.write(ser));
     }
 
     private static <T> int registerBasicType(Class<T> c, Reader<DataInputStream, T> reader, Writer<DataOutputStream, T> writer) {
@@ -290,7 +293,7 @@ public final class SerializationUtil {
 
     /**
      * Registers a dynamic array algorithm which serializes objects that have the given type as a superclass. Each class
-     * will be deserialized to the type given by inputing its type into
+     * will be deserialized to the type given by inputting its type into
      * 'getSerializableClass' {@link SerializationUtil#getSerializableClass(Class)}.
      * @param c The class to register an array type for.
      * @param <T> The type to register an array type for.
@@ -339,9 +342,7 @@ public final class SerializationUtil {
                     if (oClass != null) {
                         used.add(oClass.asSubclass(c));
                     }else{
-                        if(o != null){
-                            throw new IOException("Object type not registered");
-                        }
+                        throw new IOException("Object type not registered");
                     }
                 }
 
