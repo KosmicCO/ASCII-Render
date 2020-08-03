@@ -1,5 +1,6 @@
 package us.kosdt.arl.serialization;
 
+import us.kosdt.arl.serialization.serializers.StreamDeserializer;
 import us.kosdt.arl.serialization.serializers.StreamSerializer;
 import us.kosdt.arl.util.math.Vec4d;
 
@@ -10,14 +11,11 @@ import java.util.Arrays;
 
 public class SerializationUtilTest {
 
-    private static final ByteArrayInputStream BI = new ByteArrayInputStream(new byte[0]);
-    private static final ByteArrayOutputStream BO = new ByteArrayOutputStream();
-
     public static void main(String[] args) throws IOException {
         ByteArrayOutputStream b1 = new ByteArrayOutputStream();
-        Serializer s1 = new StreamSerializer(BI, b1);
+        Serializer s1 = new StreamSerializer(b1);
         s1.write("Hello World!", new Vec4d(0, 2, 3, 1), 6);
-        Serializer s2 = new StreamSerializer(new ByteArrayInputStream(b1.toByteArray()), BO);
+        Deserializer s2 = new StreamDeserializer(new ByteArrayInputStream(b1.toByteArray()));
         System.out.println(s2.read(String.class));
         System.out.println(s2.read(Vec4d.class));
         System.out.println(s2.read(Integer.class));
@@ -37,22 +35,22 @@ public class SerializationUtilTest {
 
         try {
             b1 = new ByteArrayOutputStream();
-            s1 = new StreamSerializer(BI, b1);
+            s1 = new StreamSerializer(b1);
             s1.write((Object) a1); // should fail
         } catch (IOException e){
             System.out.println(e.getMessage());
         }
 
         b1 = new ByteArrayOutputStream();
-        s1 = new StreamSerializer(BI, b1);
+        s1 = new StreamSerializer(b1);
         s1.write((Object) a2);
-        s2 = new StreamSerializer(new ByteArrayInputStream(b1.toByteArray()), BO);
+        s2 = new StreamDeserializer(new ByteArrayInputStream(b1.toByteArray()));
         System.out.println(Arrays.toString(s2.read(A[].class)));
 
         b1 = new ByteArrayOutputStream();
-        s1 = new StreamSerializer(BI, b1);
+        s1 = new StreamSerializer(b1);
         s1.writeAlg(algAArrayID, a1);
-        s2 = new StreamSerializer(new ByteArrayInputStream(b1.toByteArray()), BO);
+        s2 = new StreamDeserializer(new ByteArrayInputStream(b1.toByteArray()));
         System.out.println(Arrays.toString((Object[]) s2.readAlg(algAArrayID)));
     }
 
@@ -63,7 +61,7 @@ public class SerializationUtilTest {
             this.a = a;
         }
 
-        public A(Serializer ser) throws IOException {
+        public A(Deserializer ser) throws IOException {
             this.a = ser.read(Integer.class);
         }
 
@@ -86,7 +84,7 @@ public class SerializationUtilTest {
             this.b = b;
         }
 
-        public B(Serializer ser) throws IOException {
+        public B(Deserializer ser) throws IOException {
             super(ser);
             this.b = ser.read(Integer.class);
         }

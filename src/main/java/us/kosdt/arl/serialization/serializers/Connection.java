@@ -1,5 +1,6 @@
 package us.kosdt.arl.serialization.serializers;
 
+import us.kosdt.arl.serialization.Deserializer;
 import us.kosdt.arl.serialization.Serializer;
 import us.kosdt.arl.util.Log;
 
@@ -15,9 +16,10 @@ import java.util.function.Consumer;
 /**
  * A 'Serializer' {@link Serializer} which serializes across a Socket connection.
  */
-public class Connection implements Serializer {
+public class Connection implements Serializer, Deserializer {
 
     private final Socket socket;
+    private StreamDeserializer deser;
     private StreamSerializer ser;
     private final Object readMutex = new Object();
     private final Object writeMutex = new Object();
@@ -33,7 +35,8 @@ public class Connection implements Serializer {
     public Connection(Socket socket) {
         this.socket = socket;
         try{
-            ser = new StreamSerializer(socket.getInputStream(), socket.getOutputStream());
+            deser = new StreamDeserializer(socket.getInputStream());
+            ser = new StreamSerializer(socket.getOutputStream());
         } catch (IOException e) {
             close();
         }
@@ -109,7 +112,7 @@ public class Connection implements Serializer {
         new Thread(() -> {
             while (!closed) {
                 try {
-                    short id = ser.getInputStream().readShort();
+                    short id = deser.getInputStream().readShort();
                     processMessage(id);
                 } catch (IOException ex) {
                     close();
@@ -162,7 +165,7 @@ public class Connection implements Serializer {
         synchronized (readMutex) {
             if (!closed) {
                 try {
-                    return ser.read(c);
+                    return deser.read(c);
                 } catch (IOException e) {
                     close();
                 }
@@ -174,7 +177,7 @@ public class Connection implements Serializer {
     @Override
     public Object readAlg(int alg) throws IOException {
         synchronized (readMutex) {
-            return ser.readAlg(alg);
+            return deser.readAlg(alg);
         }
     }
 
@@ -200,7 +203,7 @@ public class Connection implements Serializer {
 
     @Override
     public DataInputStream getInputStream() {
-        return ser.getInputStream();
+        return deser.getInputStream();
     }
 
     @Override
