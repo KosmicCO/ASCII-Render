@@ -6,7 +6,7 @@
 
   <groupId>us.kosdt</groupId>
   <artifactId>arl</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
 
   <distributionManagement>
     <repository>
