@@ -7,7 +7,7 @@ import us.kosdt.arl.serialization.Serializer;
 import java.io.*;
 import java.util.*;
 
-public class SegmentedObjectFile { // TODO: Finish class, implement more features
+public class SegmentedObjectFile {
 
     public static final long DEFAULT_SEGMENT_SIZE = 2^12;
     public static final int BITSET_SERIALIZATION_ALG;
@@ -20,6 +20,8 @@ public class SegmentedObjectFile { // TODO: Finish class, implement more feature
     private final List<Integer> objectIndices;
     private final boolean fixedIndices;
     private Deserializer currentReader;
+    private ByteArrayOutputStream currentWriterStream;
+    private Serializer currentWriter;
     private boolean closed = false;
 
     static{
@@ -61,6 +63,8 @@ public class SegmentedObjectFile { // TODO: Finish class, implement more feature
         openSegments = new BitSet();
         objectIndices = new ArrayList<>(numObjects);
         currentReader = null;
+        currentWriterStream = null;
+        currentWriter = null;
     }
 
     public SegmentedObjectFile(String path, int segmentSize) throws IOException {
@@ -78,6 +82,8 @@ public class SegmentedObjectFile { // TODO: Finish class, implement more feature
         openSegments = (BitSet) currentReader.readAlg(BITSET_SERIALIZATION_ALG);
         objectIndices = new ArrayList<>(Arrays.asList(currentReader.read(Integer[].class)));
         currentReader.close();
+        currentWriterStream = null;
+        currentWriter = null;
     }
 
     public SegmentedObjectFile(String path) throws IOException {
@@ -129,24 +135,20 @@ public class SegmentedObjectFile { // TODO: Finish class, implement more feature
         return currentReader;
     }
 
-    private boolean writeIndexAlg(int index, int[] alg, Object ... oa) throws IOException { // TODO: Implement no write on oversized
-        if(alg.length != oa.length){
-            throw new IllegalArgumentException("Algorithm id list must be the same length as the object array");
+    private boolean writeFromSerializer(int index, int maxSegments) throws IOException {
+        if(currentWriter == null){
+            throw new IOException("No current writer to write from");
         }
-        ByteArrayOutputStream serialized = new ByteArrayOutputStream();
-        Serializer ser = new StreamSerializer(serialized);
-        for (int i = 0; i < alg.length; i++){
-            if(alg[i] == -1){
-                ser.write(oa[i]);
-            }else{
-                ser.writeAlg(alg[i], oa[i]);
-            }
-        }
-        ByteArrayInputStream toWrite = new ByteArrayInputStream(serialized.toByteArray());
-        int len = serialized.size();
+        currentWriter.close();
+        ByteArrayInputStream toWrite = new ByteArrayInputStream(currentWriterStream.toByteArray());
+        int len = currentWriterStream.size();
         int numSegments = (int) Math.ceil(((double) len) / segmentSize);
 
-        // TODO: If oversized, return false for index != 0
+        if(maxSegments != -1){
+            if(maxSegments < numSegments){
+                return false;
+            }
+        }
 
         int[] writeIndices = new int[numSegments];
         writeIndices[0] = index;
@@ -170,13 +172,7 @@ public class SegmentedObjectFile { // TODO: Finish class, implement more feature
         return true;
     }
 
-    private boolean writeIndex(int index, Object ... oa) throws IOException {
-        int[] algs = new int[oa.length];
-        Arrays.fill(algs, -1);
-        return writeIndexAlg(index, algs, oa);
-    }
-
-    public boolean write(int objectIndex, Object ... oa) throws IOException {
+    public boolean write(int objectIndex, int maxSegments) throws IOException {
         if(closed){
             throw new IOException("Cannot do IO on closed file");
         }
@@ -191,18 +187,31 @@ public class SegmentedObjectFile { // TODO: Finish class, implement more feature
                 while(objectIndices.size() <= objectIndex){
                     objectIndices.add(0);
                 }
-                objectIndices.add(objectIndex, index);
+                objectIndices.set(objectIndex, index);
             }
         } else {
             index = objectIndices.get(objectIndex);
             if (index == 0) {
                 index = openSegments.nextClearBit(1);
-                objectIndices.add(objectIndex, index);
+                objectIndices.set(objectIndex, index);
             } else {
                 removeIndex(index);
             }
         }
-        return writeIndex(index, oa);
+        return writeFromSerializer(index, maxSegments);
+    }
+
+    public boolean write(int objectIndex) throws IOException {
+        return write(objectIndex, -1);
+    }
+
+    public Serializer getWriter() throws IOException {
+        if(currentWriter != null) {
+            currentWriter.close();
+        }
+        currentWriterStream = new ByteArrayOutputStream();
+        currentWriter = new StreamSerializer(currentWriterStream);
+        return currentWriter;
     }
 
     public void save() throws IOException {
@@ -210,7 +219,10 @@ public class SegmentedObjectFile { // TODO: Finish class, implement more feature
             throw new IOException("Cannot do IO on closed file");
         }
         remove(0);
-        writeIndexAlg(0, new int[]{BITSET_SERIALIZATION_ALG, -1}, openSegments, objectIndices.toArray(new Integer[0]));
+        Serializer ser = getWriter();
+        ser.writeAlg(BITSET_SERIALIZATION_ALG, openSegments);
+        ser.write((Object) objectIndices.toArray(new Integer[0]));
+        writeFromSerializer(0, -1);
     }
 
     public void close() throws IOException {

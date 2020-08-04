@@ -7,14 +7,17 @@ import java.io.IOException;
 public class SegmentedObjectFileTest {
 
     public static void main(String[] args) throws IOException {
-        SegmentedObjectFile sof = new SegmentedObjectFile("test_files/SegmentedObjectFileTest.ob", 16);
+        SegmentedObjectFile sof = new SegmentedObjectFile("test_files/SegmentedObjectFileTest.ob", 32);
 
-        sof.write(0, "Alpha Beta Gamma Delta");
-        sof.write(1, "Epsilon Zeta Eta Theta");
+        sof.getWriter().write("Alpha Beta Gamma Delta");
+        sof.write(0, 30);
+        sof.getWriter().write("Epsilon Zeta Eta Theta");
+        sof.write(1);
         System.out.println(sof.getReader(0).read(String.class));
         sof.remove(0);
         sof.save();
-        sof.write(3, "Iota Kappa Lambda Mu");
+        sof.getWriter().write("Iota Kappa Lambda Mu");
+        sof.write(3);
         System.out.println(sof.getReader(1).read(String.class));
         System.out.println(sof.getReader(3).read(String.class));
 
@@ -26,6 +29,7 @@ public class SegmentedObjectFileTest {
 
         System.out.println(sof.getReader(1).read(String.class));
         System.out.println(sof.getReader(3).read(String.class));
-        sof.write(4, "Nu Xi Omicron Pi");
+        sof.getWriter().write("Nu Xi Omicron Pi");
+        sof.write(4);
     }
 }
