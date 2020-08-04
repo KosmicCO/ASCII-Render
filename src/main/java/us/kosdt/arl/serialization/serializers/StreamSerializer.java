@@ -9,22 +9,34 @@ import java.io.*;
  */
 public class StreamSerializer implements Serializer {
 
-    private final DataInputStream input;
     private final DataOutputStream output;
 
     /**
-     * Constructs this using an input and output stream to draw from and into.
-     * @param is The input stream to deserialize from.
+     * Constructs this using an output stream to serialize into.
      * @param os The output stream to serialize into.
      */
-    public StreamSerializer(InputStream is, OutputStream os){
-        input = new DataInputStream(is);
+    public StreamSerializer(OutputStream os){
         output = new DataOutputStream(os);
     }
 
-    @Override
-    public DataInputStream getInputStream() {
-        return input;
+    /**
+     * Returns a 'StreamSerializer' {@link StreamSerializer} to serialize into a file.
+     * @param file The file to serialize into.
+     * @return The 'StreamSerializer' {@link StreamSerializer} associated with the file.
+     * @throws FileNotFoundException If the given file is not found
+     */
+    public static StreamSerializer fileSerializer(File file) throws FileNotFoundException {
+        return new StreamSerializer(new FileOutputStream(file));
+    }
+
+    /**
+     * Returns a 'StreamSerializer' {@link StreamSerializer} to serialize into a file.
+     * @param path The string path to a file to serialize into.
+     * @return The 'StreamSerializer' {@link StreamSerializer} associated with the file.
+     * @throws FileNotFoundException If the given file is not found
+     */
+    public static StreamSerializer fileSerializer(String path) throws FileNotFoundException {
+        return new StreamSerializer(new FileOutputStream(path));
     }
 
     @Override

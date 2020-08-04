@@ -20,7 +20,7 @@ public final class SerializationUtil {
     private static final Map<Class, Integer> ALG_ID = new HashMap<>();
     private static final Map<Class, Class> ALIASES = new HashMap<>();
 
-    private static final List<Reader<Serializer, Object>> READERS = new ArrayList<>();
+    private static final List<Reader<Deserializer, Object>> READERS = new ArrayList<>();
     private static final List<Writer<Serializer, Object>> WRITERS = new ArrayList<>();
 
     static{
@@ -68,7 +68,7 @@ public final class SerializationUtil {
      */
     public static <T extends S, S> void registerAlias(Class<T> c, Class<S> alias) {
         if (ALG_ID.containsKey(alias)){
-            if (!isSerializable(c)) {
+            if (!isRegistered(c)) {
                 ALIASES.put(c, alias);
             }else {
                 throw new IllegalArgumentException("Types cannot be registered more than once");
@@ -83,7 +83,7 @@ public final class SerializationUtil {
      * @param c The type to check for registration.
      * @return Whether the type could be serialized.
      */
-    public static boolean isSerializable(Class c){
+    public static boolean isRegistered(Class c){
         return ALG_ID.containsKey(c) || ALIASES.containsKey(c);
     }
 
@@ -123,7 +123,7 @@ public final class SerializationUtil {
      * @param alg The id of the method.
      * @return The deserializer method.
      */
-    public static Reader<Serializer, ?> getReader(int alg){
+    public static Reader<Deserializer, ?> getReader(int alg){
         return READERS.get(alg);
     }
 
@@ -141,15 +141,14 @@ public final class SerializationUtil {
      * deserializer for the type given by 'getSerializableClass' {@link SerializationUtil#getSerializableClass(Class) }.
      * @param c The class to find the deserializer for.
      * @param <T> The type to deserialize.
-     * @param <S> The type that will be output by deserialization.
      * @return The method for deserializing the given type.
      */
-    public static <T> Reader<Serializer, T> getReader(Class<T> c){
+    public static <T> Reader<Deserializer, T> getReader(Class<T> c){
         if(isAliased(c)){
             throw new IllegalArgumentException("Cannot read in type registered with an aliased reader");
         }
         int index = getAlgID(c);
-        return index == -1 ? null : (Reader<Serializer, T>) READERS.get(index);
+        return index == -1 ? null : (Reader<Deserializer, T>) READERS.get(index);
     }
 
     /**
@@ -176,7 +175,7 @@ public final class SerializationUtil {
      * @param <T> The type to register serialization and deserialization methods for.
      * @return The method id.
      */
-    public static <T> int registerAlg(Reader<Serializer, T> reader, Writer<Serializer, T> writer){
+    public static <T> int registerAlg(Reader<Deserializer, T> reader, Writer<Serializer, T> writer){
         READERS.add((Reader) reader);
         WRITERS.add((Writer) writer);
         return numAlgs() - 1;
@@ -190,8 +189,8 @@ public final class SerializationUtil {
      * @param <T> The type to register serialization and deserialization methods for.
      * @return The method id.
      */
-    public static <T> int registerType(Class<T> c, Reader<Serializer, T> reader, Writer<Serializer, T> writer) {
-        if(isSerializable(c)){
+    public static <T> int registerType(Class<T> c, Reader<Deserializer, T> reader, Writer<Serializer, T> writer) {
+        if(isRegistered(c)){
             return getAlgID(c);
         }
         int algID = registerAlg(reader, writer);
@@ -206,7 +205,7 @@ public final class SerializationUtil {
      * @param <T> The type to register serialization and deserialization methods for.
      * @return The method id.
      */
-    public static <T extends SerializeWritable> int registerType(Class<T> c, Reader<Serializer, T> reader){
+    public static <T extends SerializeWritable> int registerType(Class<T> c, Reader<Deserializer, T> reader){
         return registerType(c, reader, (ser, o) -> o.write(ser));
     }
 
@@ -270,7 +269,7 @@ public final class SerializationUtil {
         if(isAliased(c)){
             throw new IllegalArgumentException("Cannot register an array for an aliased type");
         }
-        if(!isSerializable(c)){
+        if(!isRegistered(c)){
             throw new IllegalArgumentException("Cannot register an array for an unregistered type");
         }
         return registerType((Class<T[]>) Array.newInstance(c, 0).getClass(), ser -> {
@@ -302,7 +301,7 @@ public final class SerializationUtil {
      */
     public static <T> int registerDynamicArrayAlg(Class<T> c){
 
-        Reader<Serializer, T[]> read = ser -> {
+        Reader<Deserializer, T[]> read = ser -> {
             int len = ser.read(Integer.class);
             T[] array = (T[]) Array.newInstance(c, len);
             String[] classes = ser.read(String[].class);
@@ -310,7 +309,7 @@ public final class SerializationUtil {
             try {
                 for (int i = 0; i < classes.length; i++) {
                     Class<? extends T> subC = Class.forName(classes[i]).asSubclass(c);
-                    if (!isSerializable(subC)) {
+                    if (!isRegistered(subC)) {
                         throw new IOException("Class " + subC + " not registered");
                     }
                     initedClasses[i] = subC;
