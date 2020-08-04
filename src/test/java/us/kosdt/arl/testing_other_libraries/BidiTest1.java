@@ -1,4 +1,4 @@
-package us.kosdt.arl.testing_other_libraries.bidi;
+package us.kosdt.arl.testing_other_libraries;
 
 import java.text.Bidi;
 import java.util.Arrays;
