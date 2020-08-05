@@ -63,7 +63,17 @@ public class DoubleBufferEditor implements TextEditor{
         if(index < firstBuffer.size()){
             return firstBuffer.get(index);
         }
-        return secondBuffer.get(index - firstBuffer.size());
+        return secondBuffer.get(secondBuffer.size() - index + firstBuffer.size() - 1);
+    }
+
+    @Override
+    public List<Integer> getText() {
+        List<Integer> text = new ArrayList<>();
+        text.addAll(firstBuffer);
+        for (int i = secondBuffer.size() - 1; i >= 0; i--){
+            text.add(secondBuffer.get(i));
+        }
+        return text;
     }
 
     @Override
@@ -141,6 +151,7 @@ public class DoubleBufferEditor implements TextEditor{
 
     @Override
     public boolean takeKeyInput(int key){
+        shiftBuffers();
         switch (key){
             case GLFW_KEY_BACKSPACE:
                 backspace();
@@ -182,17 +193,21 @@ public class DoubleBufferEditor implements TextEditor{
             throw new IllegalArgumentException("The start index cannot be greater than end index");
         }
         moveCursor(Math.min(start, size()));
+        shiftBuffers();
         if(end >= size()){
             secondBuffer.clear();
         }else{
             for (int i = 0; i < end - start + 1; i++){
+                if(secondBuffer.isEmpty()){
+                    break;
+                }
                 secondBuffer.remove(secondBuffer.size() - 1);
             }
         }
     }
 
     @Override
-    public boolean takeCodeInput(int key, int[] highlight) {
+    public boolean takeKeyInput(int key, int[] highlight) {
         if(key != GLFW_KEY_BACKSPACE && key != GLFW_KEY_DELETE){
             return false;
         }
@@ -214,7 +229,8 @@ public class DoubleBufferEditor implements TextEditor{
         return false;
     }
 
-    public boolean takeKeyInput(int codepoint, int[] highlight){
+    @Override
+    public boolean takeCodeInput(int codepoint, int[] highlight){
         if(!validCodepoint.test(codepoint)){
             return false;
         }
@@ -224,7 +240,7 @@ public class DoubleBufferEditor implements TextEditor{
                     throw new IllegalArgumentException("The given highlight is not a valid highlight range");
                 }
                 deleteRange(highlight[0], highlight[1]);
-                return true;
+                return takeCodeInput(codepoint);
             case 1:
                 if (highlight[0] < 0){
                     throw new IllegalArgumentException("The first index of highlight is less than zero");

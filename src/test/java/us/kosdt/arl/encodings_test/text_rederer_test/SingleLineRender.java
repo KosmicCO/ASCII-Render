@@ -19,12 +19,12 @@ public class SingleLineRender extends SingleTextLine implements Component {
     private final Vec2d position;
 
     public SingleLineRender(List<Integer> string, int start, int size, Vec2d pos, boolean leftToRight) {
-        super(string, start, size, leftToRight);
+        super(string, start, size, leftToRight, DEFAULT_ANALYSIS_START_BUFFER, -2);
         position = pos;
     }
 
     public SingleLineRender(TextEditor editor, int start, int size, Vec2d pos, boolean leftToRight) {
-        super(editor, start, size, leftToRight);
+        super(editor, start, size, leftToRight, DEFAULT_ANALYSIS_START_BUFFER, -2);
         position = pos;
     }
 
@@ -37,7 +37,7 @@ public class SingleLineRender extends SingleTextLine implements Component {
     public int getIndexFromMouse(Vec2d mouse) {
         int visualIndex = Math.min(Math.max((isLeftToRight() ? 1 : -1) * ((int) (mouse.x - position.x - (isLeftToRight() ? 0 : getViewSize()))), 0), getRendered().size());
         if(visualIndex >= getIndices().size()){
-            return getIndices().size();
+            return this.getTextLength();
         }
         return getIndices().get(visualIndex);
     }

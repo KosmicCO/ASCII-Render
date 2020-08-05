@@ -1,8 +1,12 @@
 package us.kosdt.arl.graphics.gui.components.text.text_editors;
 
+import java.util.List;
+
 public interface TextEditor{
 
     int codeAt(int index);
+
+    List<Integer> getText();
 
     void moveCursor(int index);
 

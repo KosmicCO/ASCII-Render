@@ -18,9 +18,9 @@ import static java.lang.Character.*;
 
 public abstract class SingleTextLine implements EditorRenderer {
 
-    public static final int DEFAULT_ANALYSIS_START_BUFFER = 30;
+    public static final int DEFAULT_ANALYSIS_START_BUFFER = 32;
 
-    private static final Map<Byte, Character> REPLACE = new HashMap<>();
+    static final Map<Byte, Character> REPLACE = new HashMap<>();
 
     static{
         REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT, 'A');
@@ -37,7 +37,7 @@ public abstract class SingleTextLine implements EditorRenderer {
         REPLACE.put(DIRECTIONALITY_SEGMENT_SEPARATOR, (char) 0x1F); // Segment Separator
         REPLACE.put(DIRECTIONALITY_WHITESPACE, ' ');
         REPLACE.put(DIRECTIONALITY_OTHER_NEUTRALS, '!');
-        
+
         REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING, (char) 0x202A); // LRE code
         REPLACE.put(DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING, (char) 0x202B); // RLE code
         REPLACE.put(DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE, (char) 0x202D); // LRO code
@@ -88,17 +88,11 @@ public abstract class SingleTextLine implements EditorRenderer {
     private int start;
     private int size;
 
+    private int cursorBuffer;
+
     private boolean leftToRight;
 
-    public SingleTextLine(TextEditor editor, int start, int size, boolean leftToRight){
-        this(editor, start, size, leftToRight, DEFAULT_ANALYSIS_START_BUFFER);
-    }
-
-    public SingleTextLine(List<Integer> string, int start, int size, boolean leftToRight){
-        this(string, start, size, leftToRight, DEFAULT_ANALYSIS_START_BUFFER);
-    }
-
-    public SingleTextLine(TextEditor editor, int start, int size, boolean leftToRight, int analysisStartBuffer){
+    public SingleTextLine(TextEditor editor, int start, int size, boolean leftToRight, int analysisStartBuffer, int cursorBuffer){
         if(editor == null){
             throw new IllegalArgumentException("editor cannot be null");
         }
@@ -119,11 +113,13 @@ public abstract class SingleTextLine implements EditorRenderer {
 
         validCache = false;
         cachedHighlightSelection = null;
+
+        this.cursorBuffer = cursorBuffer;
         
         update();
     }
 
-    public SingleTextLine(List<Integer> string, int start, int size, boolean leftToRight, int analysisStartBuffer){
+    public SingleTextLine(List<Integer> string, int start, int size, boolean leftToRight, int analysisStartBuffer, int cursorBuffer){
         if(string == null){
             throw new IllegalArgumentException("string cannot be null");
         }
@@ -144,7 +140,9 @@ public abstract class SingleTextLine implements EditorRenderer {
 
         validCache = false;
         cachedHighlightSelection = null;
-        
+
+        this.cursorBuffer = cursorBuffer;
+
         update();
     }
 
@@ -351,6 +349,30 @@ public abstract class SingleTextLine implements EditorRenderer {
         highlightPos = null;
         highlightStart = index;
         highlightEnd = null;
+        if(cursorBuffer >= 0) {
+            if (index < getViewStart() + cursorBuffer) {
+                setViewStart(Math.max(index - cursorBuffer, 0));
+            } else if (index > getViewStart() + getViewSize() - 1) {
+                setViewStart(index - getViewSize() + 1);
+            }
+        }else{
+            if(getViewStart() + getViewSize() > getTextLength()){
+                setViewStart(Math.max(getTextLength() - getViewSize() + 1, 0));
+            }else{
+                if (index < getViewStart() - cursorBuffer - 1) { // cursorBuffer is a negative value
+                    setViewStart(Math.max(index + cursorBuffer + 1, 0));
+                } else if (index > getViewStart() + getViewSize() - 1) {
+                    setViewStart(index - getViewSize() + 1);
+                }
+            }
+        }
+    }
+
+    public int getTextLength(){
+        if (editor == null) {
+            return string.size();
+        }
+        return editor.size();
     }
 
     @Override
@@ -371,12 +393,12 @@ public abstract class SingleTextLine implements EditorRenderer {
                 return HIGHLIGHT_LEVEL_NONE;
             case 1:
                 if(index == indices.size()){
-                    return index == highlight[0] ? HIGHLIGHT_LEVEL_CURSOR : HIGHLIGHT_LEVEL_NONE;
+                    return getTextLength() == highlight[0] ? HIGHLIGHT_LEVEL_CURSOR : HIGHLIGHT_LEVEL_NONE;
                 }
                 return indices.get(index) == highlight[0] ? HIGHLIGHT_LEVEL_CURSOR : HIGHLIGHT_LEVEL_NONE;
             case 2:
                 if(index == indices.size()){
-                    return index == highlight[1] ? HIGHLIGHT_LEVEL_SECTION : HIGHLIGHT_LEVEL_NONE;
+                    return getTextLength() == highlight[1] ? HIGHLIGHT_LEVEL_SECTION : HIGHLIGHT_LEVEL_NONE;
                 }
                 int ind = indices.get(index);
                 return highlight[0] <= ind && ind <= highlight[1] ? HIGHLIGHT_LEVEL_SECTION : HIGHLIGHT_LEVEL_NONE;
