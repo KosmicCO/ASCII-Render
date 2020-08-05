@@ -10,6 +10,9 @@ import us.kosdt.arl.graphics.gui.components.text.text_editors.TextEditor;
 import us.kosdt.arl.graphics.gui.components.text.text_renderers.EditorRenderer;
 import us.kosdt.arl.util.math.Vec2d;
 
+import static org.lwjgl.glfw.GLFW.*;
+import static us.kosdt.arl.graphics.gui.components.text.text_renderers.EditorRenderer.Direction.*;
+
 public abstract class EditorComponent implements Component { // TODO: Finish
 
     private TextEditor editor;
@@ -65,11 +68,27 @@ public abstract class EditorComponent implements Component { // TODO: Finish
         caught |= Message.onMessageType(message, KeyPress.class, kp -> {
             if(first && selected) {
                 if(kp.state) {
-                    boolean changed = editor.takeKeyInput(kp.key, renderer.getHighlighted());
-                    if(changed){
-                        renderer.setCursor(editor.getCursor());
+                    switch(kp.key){
+                        case GLFW_KEY_LEFT:
+                            renderer.directionInput(renderer.isLeftToRight() ? BACK : FORWARD);
+                            break;
+                        case GLFW_KEY_RIGHT:
+                            renderer.directionInput(renderer.isLeftToRight() ? FORWARD : BACK);
+                            break;
+                        case GLFW_KEY_UP:
+                            renderer.directionInput(BACK_LINE);
+                            break;
+                        case GLFW_KEY_DOWN:
+                            renderer.directionInput(FORWARD_LINE);
+                            break;
+                        default:
+                            boolean changed = editor.takeKeyInput(kp.key, renderer.getHighlighted());
+                            if(changed){
+                                renderer.setCursor(editor.getCursor());
+                            }
+                            return changed;
                     }
-                    return changed;
+                    return true;
                 }
             }
             return false;

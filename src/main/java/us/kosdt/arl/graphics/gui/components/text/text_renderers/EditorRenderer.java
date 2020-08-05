@@ -15,4 +15,13 @@ public interface EditorRenderer extends TextRenderer {
     void setViewStart(int index);
 
     void setViewSize(int size);
+
+    void directionInput(Direction dir);
+
+    enum Direction {
+        BACK_LINE,
+        FORWARD_LINE,
+        BACK,
+        FORWARD
+    }
 }

@@ -357,7 +357,7 @@ public abstract class SingleTextLine implements EditorRenderer {
             }
         }else{
             if(getViewStart() + getViewSize() > getTextLength()){
-                setViewStart(Math.max(getTextLength() - getViewSize() + 1, 0));
+                setViewStart(Math.max(Math.min(getTextLength() - getViewSize() + 1, index + cursorBuffer + 1), 0));
             }else{
                 if (index < getViewStart() - cursorBuffer - 1) { // cursorBuffer is a negative value
                     setViewStart(Math.max(index + cursorBuffer + 1, 0));
@@ -366,6 +366,51 @@ public abstract class SingleTextLine implements EditorRenderer {
                 }
             }
         }
+    }
+
+    private int getAdjacentRenderable(int index, boolean back){
+        int curInd = index + (back ? -1 : 1);
+        while(curInd >= 0 && curInd < getTextLength()){
+            int codepoint = codeAt(curInd);
+            TileChar tc = Window.window().getUnicodeMap().mapCodePoint(codepoint);
+            if(tc != null){
+                return curInd;
+            }
+            curInd += back ? -1 : 1;
+        }
+        return Math.min(Math.max(0, curInd), getTextLength());
+    }
+
+    public void directionInput(Direction dir){
+        int[] highlight = getHighlighted();
+        if(highlight.length != 0){
+            int index;
+            if(highlight.length == 1){
+                index = highlight[0];
+            }else{
+                index = highlight[1];
+            }
+            switch (dir){
+                case BACK:
+                    index = getAdjacentRenderable(index, true);
+                    break;
+                case FORWARD:
+                    index = getAdjacentRenderable(index, false);
+                    break;
+            }
+            if(highlight.length == 1){
+                setCursor(index);
+            }else{
+                setHighlight(highlight[0], index);
+            }
+        }
+    }
+
+    public int codeAt(int index){
+        if(editor == null){
+            return string.get(index);
+        }
+        return editor.codeAt(index);
     }
 
     public int getTextLength(){
